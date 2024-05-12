@@ -93,7 +93,7 @@ hi MatchParen ctermbg=245
 
 hi Todo ctermfg=220 ctermbg=234 cterm=None
 hi WildMenu ctermbg=220
-hi Search ctermbg=220
+hi Search ctermbg=220 ctermfg=234
 hi SpellBad ctermbg=203 ctermfg=234
 hi Error ctermbg=234 ctermfg=203 cterm=reverse
 
