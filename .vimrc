@@ -64,7 +64,7 @@ inoremap <Right> <Nop>
 
 " File type-specific settings
 autocmd FileType make setlocal noexpandtab  " Makefiles require tabs for indentation
-autocmd FileType go setlocal noexpandtab    " gofmt enforces tab
+autocmd FileType go setlocal noexpandtab    " gofmt enforces tabs
 autocmd FileType bzl setlocal syntax=python " Starlark is Python-like, so this gives the best syntax highlighting
 
 let g:onedark_hide_endofbuffer=1
