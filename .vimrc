@@ -21,8 +21,8 @@ let g:netrw_banner=0
 let g:netrw_winsize=17
 let g:netrw_browse_split=4
 let g:netrw_preview=1
-inoremap <CS-e> :Lex! <CR> :set nowrap <CR>
-noremap <CS-e> :Lex! <CR> :set nowrap <CR>
+inoremap <CS-e> :Lex! <CR> :set nowrap <CR>h
+noremap <CS-e> :Lex! <CR> :set nowrap <CR>h
 
 " Terminal
 inoremap <C-t> :bo term ++rows=15<CR>
