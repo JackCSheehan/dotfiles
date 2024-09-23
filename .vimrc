@@ -7,6 +7,8 @@ set scrolloff=20
 set cursorline
 set cursorlineopt=screenline
 set belloff=all
+set formatoptions+=r
+set nowrap
 
 " Statusline
 set statusline=%F%m
@@ -21,11 +23,9 @@ let g:netrw_banner=0
 let g:netrw_winsize=17
 let g:netrw_browse_split=4
 let g:netrw_preview=1
-inoremap <CS-e> :Lex! <CR> :set nowrap <CR>h
-noremap <CS-e> :Lex! <CR> :set nowrap <CR>h
+noremap <CS-e> :Lex! <CR> h
 
 " Terminal
-inoremap <C-t> :bo term ++rows=15<CR>
 noremap <C-t> :bo term ++rows=15<CR>
 
 " Indentation
@@ -45,12 +45,13 @@ set hlsearch
 set wildmenu
 set wildmode=list:longest
 
-" Multi-line comment remap
-inoremap /**/ /*<CR><space>*<CR>*/<ESC>ka<space>
-
 " NoOp Ctrl + A to avoid interaction with screen
 noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
+
+" Allow navigating through soft line wraps
+nnoremap <expr> j v:count ? 'j' : 'gj'
+nnoremap <expr> k v:count ? 'k' : 'gk'
 
 " NoOp arrow keys
 noremap <Up> <Nop>
@@ -63,10 +64,13 @@ noremap <Right> <Nop>
 inoremap <Right> <Nop>
 
 " File type-specific settings
-autocmd FileType make setlocal noexpandtab  " Makefiles require tabs for indentation
-autocmd FileType go setlocal noexpandtab    " gofmt enforces tabs
-autocmd FileType bzl setlocal syntax=python " Starlark is Python-like, so this gives the best syntax highlighting
+autocmd FileType make setlocal noexpandtab       " Makefiles require tabs for indentation
+autocmd FileType go setlocal noexpandtab         " gofmt enforces tabs
+autocmd FileType bzl setlocal syntax=python      " Starlark is Python-like, so this gives the best syntax highlighting
+autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives the best syntax highlighting
+autocmd FileType markdown setlocal wrap
 
+" Color scheme
 let g:onedark_hide_endofbuffer=1
 let g:onedark_termcolors=256
 let g:onedark_terminal_italics=1
