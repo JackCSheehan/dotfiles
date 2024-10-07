@@ -9,6 +9,7 @@ set cursorlineopt=screenline
 set belloff=all
 set formatoptions+=r
 set nowrap
+set autoread
 
 " Statusline
 set statusline=%F%m
