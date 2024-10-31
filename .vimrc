@@ -78,6 +78,7 @@ syntax on
 set background=dark
 colorscheme iceberg
 hi LineNr ctermbg=234
+hi SpecialKey ctermfg=237
 
 " Callback for a popup menu to open a file
 func! OpenFile(id, result)
