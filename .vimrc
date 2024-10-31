@@ -15,7 +15,7 @@ set noea
 " Statusline
 set statusline=%F%m
 set statusline+=%=
-set statusline+=Ln\ %l/%L\ Col\ %v 
+set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
 let g:netrw_liststyle=0
