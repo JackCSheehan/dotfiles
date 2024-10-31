@@ -10,12 +10,12 @@ set belloff=all
 set formatoptions+=r
 set nowrap
 set autoread
+set noea
 
 " Statusline
 set statusline=%F%m
 set statusline+=%=
-set statusline+=Ln\ %l/%L\ \(%p%%),\ Col\ %v\ 
-set statusline+=%y\ 
+set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
 let g:netrw_liststyle=0
@@ -72,8 +72,31 @@ autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives
 autocmd FileType markdown setlocal wrap
 
 " Color scheme
-let g:onedark_hide_endofbuffer=1
-let g:onedark_termcolors=256
-let g:onedark_terminal_italics=1
 syntax on
-colorscheme onedark
+colorscheme iceberg
+
+" Callback for a popup menu to open a file
+func! OpenFile(id, result)
+    if a:result < 1
+        return
+    endif
+
+    let selected_file = getbufline(winbufnr(a:id), a:result)
+    execute "e" selected_file[0]
+endfunc
+
+" Opens popup menu to show files based on given search string
+func! ListFiles(search)
+    " Find files based on the search
+    let files = split(system("find . -type f -name '*" . a:search . "*' 2> /dev/null"), "\n")
+
+    " Show menu for selecting files
+    if len(files) == 0
+        call popup_menu("No files matching pattern '" . a:search . "'", #{ title: "Files" })
+    else
+        call popup_menu(files, #{ title: "Files", callback: "OpenFile", maxheight: &lines - 7, wrap: 0, minwidth: 100, maxwidth: 100 })
+    endif
+endfunc
+
+" Fuzzy file search
+command! -nargs=1 -complete=file Find call ListFiles(<q-args>)
