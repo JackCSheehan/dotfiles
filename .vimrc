@@ -15,7 +15,7 @@ set noea
 " Statusline
 set statusline=%F%m
 set statusline+=%=
-set statusline+=Ln\ %l/%L\ Col\ %v
+set statusline+=Ln\ %l/%L\ Col\ %v 
 
 " netrw
 let g:netrw_liststyle=0
@@ -45,6 +45,8 @@ set incsearch
 set hlsearch
 set wildmenu
 set wildmode=list:longest
+set ignorecase
+set smartcase
 
 " NoOp Ctrl + A to avoid interaction with screen
 noremap <C-a> <Nop>
@@ -73,7 +75,9 @@ autocmd FileType markdown setlocal wrap
 
 " Color scheme
 syntax on
+set background=dark
 colorscheme iceberg
+hi LineNr ctermbg=234
 
 " Callback for a popup menu to open a file
 func! OpenFile(id, result)
