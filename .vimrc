@@ -26,8 +26,8 @@ let g:netrw_browse_split=4
 let g:netrw_preview=1
 noremap <CS-e> :Lex! <CR> h
 
-" Terminal
-noremap <C-t> :bo term ++rows=15<CR>
+" Prevent terminals from blocking closing with :qa
+cnoreabbrev term term ++kill=hup
 
 " Indentation
 set expandtab
