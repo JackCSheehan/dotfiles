@@ -11,6 +11,7 @@ set formatoptions+=r
 set nowrap
 set autoread
 set noea
+set autochdir
 
 " Statusline
 set statusline=%F%m
@@ -80,28 +81,71 @@ colorscheme iceberg
 hi LineNr ctermbg=234
 hi SpecialKey ctermfg=237
 
-" Callback for a popup menu to open a file
-func! OpenFile(id, result)
+" Opens a file in the current buffer given a popup menu and its selection
+func! OpenFile(winid, result)
     if a:result < 1
         return
     endif
 
-    let selected_file = getbufline(winbufnr(a:id), a:result)
+    let selected_file = getbufline(winbufnr(a:winid), a:result)
     execute "e" selected_file[0]
 endfunc
 
-" Opens popup menu to show files based on given search string
-func! ListFiles(search)
-    " Find files based on the search
-    let files = split(system("find . -type f -name '*" . a:search . "*' 2> /dev/null"), "\n")
+func! SearchFilesFilter(winid, key)
+    " We'll let VIM handle certain key combos as it usually would to keep some of the default popup
+    " menu behaviors
+    if a:key == "\<Enter>" || a:key == "\<Esc>" || a:key == "\<C-n>" || a:key == "\<C-p>"
+        call popup_filter_menu(a:winid, a:key)
 
-    " Show menu for selecting files
-    if len(files) == 0
-        call popup_menu("No files matching pattern '" . a:search . "'", #{ title: "Files" })
-    else
-        call popup_menu(files, #{ title: "Files", callback: "OpenFile", maxheight: &lines - 7, wrap: 0, minwidth: 100, maxwidth: 100 })
+        " Since the popup menu filter already handled these characters, we don't need VIM to handle
+        " them in the editor itself
+        return 1
     endif
+    
+    let options = popup_getoptions(a:winid)
+
+    " Handle backspace
+    if a:key == "\<BS>"
+        " First 2 chars are the prompt ("> "), so once we've backspaced to the prompt, don't chop
+        " off any more characters
+        if len(options.title) <= 2
+            return 0
+        endif
+        let options.title = options.title[:-2]
+
+    " All other characters will just get appended to the title
+    else
+        let options.title = options.title . a:key
+    endif
+
+    call popup_setoptions(a:winid, options)
+
+    " Search for files based on the currently-typed query
+    " TODO: Replace with job_start to avoid hanging on longer find calls
+    let files = split(system("timeout 1s find . -type f -path '*" . options.title[2:] . "*' 2> /dev/null"), "\n")
+    
+    call popup_settext(a:winid, files)
+
+    return 1
+endfunc
+
+
+" Opens popup menu to show files based on a search string
+func! ListFiles()
+    call popup_menu("",
+\       #{
+\           title: "> ",
+\           callback: "OpenFile",
+\           filter: "SearchFilesFilter",
+\           minheight: &lines - 8,
+\           maxheight: &lines - 8,
+\           minwidth: 100,
+\           maxwidth: 100,
+\           wrap: 0,
+\           border: [0, 0, 0, 0]
+\       }
+\   )
 endfunc
 
 " Fuzzy file search
-command! -nargs=1 -complete=file Find call ListFiles(<q-args>)
+command! Find call ListFiles()
