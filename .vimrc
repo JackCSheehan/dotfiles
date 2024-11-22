@@ -11,7 +11,6 @@ set formatoptions+=r
 set nowrap
 set autoread
 set noea
-set autochdir
 
 " Statusline
 set statusline=%F%m
