@@ -119,9 +119,14 @@ func! SearchFilesFilter(winid, key)
 
     call popup_setoptions(a:winid, options)
 
+    let raw_query = options.title[2:]
+
+    # Replace spaces with stars to let users use spaces as wildcards
+    let wildcard_query = substitute(raw_query, " ", "*", "g")
+
     " Search for files based on the currently-typed query
     " TODO: Replace with job_start to avoid hanging on longer find calls
-    let files = split(system("timeout 1s find . -type f -path '*" . options.title[2:] . "*' 2> /dev/null"), "\n")
+    let files = split(system("timeout 1s find . -type f -path '*" . wildcard_query . "*' 2> /dev/null"), "\n")
     
     call popup_settext(a:winid, files)
 
@@ -131,7 +136,9 @@ endfunc
 
 " Opens popup menu to show files based on a search string
 func! ListFiles()
-    call popup_menu("",
+    " TODO: Combine with similar call in SearchFilesFilter
+    let files = split(system("timeout 1s find . -type f -path '*' 2> /dev/null"), "\n")
+    call popup_menu(files,
 \       #{
 \           title: "> ",
 \           callback: "OpenFile",
