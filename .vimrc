@@ -9,6 +9,7 @@ set cursorlineopt=screenline
 set belloff=all
 set formatoptions+=r
 set nowrap
+set linebreak
 set autoread
 set noea
 
@@ -80,78 +81,47 @@ colorscheme iceberg
 hi LineNr ctermbg=234
 hi SpecialKey ctermfg=237
 
-" Opens a file in the current buffer given a popup menu and its selection
-func! OpenFile(winid, result)
-    if a:result < 1
-        return
-    endif
+" Callback to get the user's fzf selection and open it in the current buffer
+func! FzfCallback(channel, msg)
+    try
+        " Get the user's selected file
+        let file = readfile("/tmp/vim_find")[0]
 
-    let selected_file = getbufline(winbufnr(a:winid), a:result)
-    execute "e" selected_file[0]
+        " Close the terminal buffer
+        call execute("q")
+
+        " Replace the existing buffer with the selected file
+        call execute("e " . file)
+    catch
+        " This could happe if the user presses CTRL+C or force kills the terminal job. We don't want
+        " to show an errors in these cases, so we'll ignore the exception
+    endtry
 endfunc
 
-func! SearchFilesFilter(winid, key)
-    " We'll let VIM handle certain key combos as it usually would to keep some of the default popup
-    " menu behaviors
-    if a:key == "\<Enter>" || a:key == "\<Esc>" || a:key == "\<C-n>" || a:key == "\<C-p>"
-        call popup_filter_menu(a:winid, a:key)
-
-        " Since the popup menu filter already handled these characters, we don't need VIM to handle
-        " them in the editor itself
-        return 1
-    endif
-    
-    let options = popup_getoptions(a:winid)
-
-    " Handle backspace
-    if a:key == "\<BS>"
-        " First 2 chars are the prompt ("> "), so once we've backspaced to the prompt, don't chop
-        " off any more characters
-        if len(options.title) <= 2
-            return 0
-        endif
-        let options.title = options.title[:-2]
-
-    " All other characters will just get appended to the title
-    else
-        let options.title = options.title . a:key
-    endif
-
-    call popup_setoptions(a:winid, options)
-
-    let raw_query = options.title[2:]
-
-    # Replace spaces with stars to let users use spaces as wildcards
-    let wildcard_query = substitute(raw_query, " ", "*", "g")
-
-    " Search for files based on the currently-typed query
-    " TODO: Replace with job_start to avoid hanging on longer find calls
-    let files = split(system("timeout 1s find . -type f -path '*" . wildcard_query . "*' 2> /dev/null"), "\n")
-    
-    call popup_settext(a:winid, files)
-
-    return 1
-endfunc
-
-
-" Opens popup menu to show files based on a search string
-func! ListFiles()
-    " TODO: Combine with similar call in SearchFilesFilter
-    let files = split(system("timeout 1s find . -type f -path '*' 2> /dev/null"), "\n")
-    call popup_menu(files,
+" Handles fuzzy finding execution
+func! FindExecuter()
+    " Launch a new terminal running fzf to allow user to fuzzy search files.
+    " `to` places the window at the top.
+    "
+    " The command used for the preview will always show the output of `file` at the top of the
+    " preview window but will use `--mime-encoding` to determine whether or not `cat` should be
+    " called (i.e., we don't want to `cat` binary files).
+    to call term_start(
+\       [
+\           "fzf",
+\           "--preview",
+\           "file -b {} && file --mime-encoding {} | grep -qv binary && batcat --color=always --style=numbers {}"
+\       ],
 \       #{
-\           title: "> ",
-\           callback: "OpenFile",
-\           filter: "SearchFilesFilter",
-\           minheight: &lines - 8,
-\           maxheight: &lines - 8,
-\           minwidth: 100,
-\           maxwidth: 100,
-\           wrap: 0,
-\           border: [0, 0, 0, 0]
+\           term_name: "fzf",
+\           exit_cb: "FzfCallback",
+\           out_io: "file",
+\           out_name: "/tmp/vim_find",
+\           term_finish: "close",
+\           term_rows: "25"
 \       }
 \   )
-endfunc
+endfun
 
 " Fuzzy file search
-command! Find call ListFiles()
+command! Find call FindExecuter()
