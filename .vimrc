@@ -12,9 +12,10 @@ set nowrap
 set linebreak
 set autoread
 set noea
+set errorformat+=%f
 
 " Statusline
-set statusline=%F%m
+set statusline+=%f%m
 set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
 
@@ -23,7 +24,7 @@ let g:netrw_liststyle=0
 let g:netrw_bufsettings="nolist"
 let g:netrw_banner=0
 let g:netrw_winsize=17
-let g:netrw_browse_split=4
+let g:netrw_browse_split=0
 let g:netrw_preview=1
 noremap <CS-e> :Lex! <CR> h
 
@@ -81,47 +82,19 @@ colorscheme iceberg
 hi LineNr ctermbg=234
 hi SpecialKey ctermfg=237
 
-" Callback to get the user's fzf selection and open it in the current buffer
-func! FzfCallback(channel, msg)
-    try
-        " Get the user's selected file
-        let file = readfile("/tmp/vim_find")[0]
-
-        " Close the terminal buffer
-        call execute("q")
-
-        " Replace the existing buffer with the selected file
-        call execute("e " . file)
-    catch
-        " This could happe if the user presses CTRL+C or force kills the terminal job. We don't want
-        " to show an errors in these cases, so we'll ignore the exception
-    endtry
+" Fuzzy file search
+func! FindImpl(search)
+    let search = substitute(a:search, " ", "*", "g")
+    cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
+    copen 25
 endfunc
 
-" Handles fuzzy finding execution
-func! FindExecuter()
-    " Launch a new terminal running fzf to allow user to fuzzy search files.
-    " `to` places the window at the top.
-    "
-    " The command used for the preview will always show the output of `file` at the top of the
-    " preview window but will use `--mime-encoding` to determine whether or not `cat` should be
-    " called (i.e., we don't want to `cat` binary files).
-    to call term_start(
-\       [
-\           "fzf",
-\           "--preview",
-\           "file -b {} && file --mime-encoding {} | grep -qv binary && batcat --color=always --style=numbers {}"
-\       ],
-\       #{
-\           term_name: "fzf",
-\           exit_cb: "FzfCallback",
-\           out_io: "file",
-\           out_name: "/tmp/vim_find",
-\           term_finish: "close",
-\           term_rows: "25"
-\       }
-\   )
-endfun
+command! -nargs=1 Find call FindImpl(<f-args>)
 
-" Fuzzy file search
-command! Find call FindExecuter()
+" Recursive grep
+func! GrepImpl(search)
+    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*}")
+    copen 25
+endfunc
+
+command! -nargs=1 Grep call GrepImpl(<f-args>)
