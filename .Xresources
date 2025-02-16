@@ -17,3 +17,5 @@ xterm*color12: lightskyblue3
 xterm*color13: pink3
 xterm*color14: lightskyblue3
 
+xterm*copyToClipboard: true
+
