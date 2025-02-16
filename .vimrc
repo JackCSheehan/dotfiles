@@ -78,8 +78,7 @@ autocmd FileType markdown setlocal wrap
 " Color scheme
 syntax on
 set background=dark
-colorscheme iceberg
-hi LineNr ctermbg=234
+colorscheme retrobox
 hi SpecialKey ctermfg=237
 
 " Fuzzy file search
