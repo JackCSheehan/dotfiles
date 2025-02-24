@@ -80,6 +80,7 @@ syntax on
 set background=dark
 colorscheme retrobox
 hi SpecialKey ctermfg=237
+hi SpecialComment ctermfg=102
 
 " Fuzzy file search
 func! FindImpl(search)
