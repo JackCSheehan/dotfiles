@@ -11,6 +11,7 @@ set formatoptions+=r
 set nowrap
 set linebreak
 set autoread
+au FileChangedShell * checktime
 set noea
 set errorformat+=%f
 
@@ -23,13 +24,15 @@ set statusline+=Ln\ %l/%L\ Col\ %v
 let g:netrw_liststyle=0
 let g:netrw_bufsettings="nolist"
 let g:netrw_banner=0
-let g:netrw_winsize=17
 let g:netrw_browse_split=0
 let g:netrw_preview=1
-noremap <CS-e> :Lex! <CR> h
+autocmd FileType netrw setlocal bufhidden=delete
 
-" Prevent terminals from blocking closing with :qa
-cnoreabbrev term term ++kill=hup
+func! ToggleNetrw()
+    execute "Lex! | vert resize 30"
+endfunc
+
+noremap <CS-e> :call ToggleNetrw()<CR>
 
 " Indentation
 set expandtab
@@ -49,10 +52,6 @@ set wildmenu
 set wildmode=list:longest
 set ignorecase
 set smartcase
-
-" NoOp Ctrl + A to avoid interaction with screen
-noremap <C-a> <Nop>
-inoremap <C-a> <Nop>
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
@@ -75,6 +74,26 @@ autocmd FileType bzl setlocal syntax=python      " Starlark is Python-like, so t
 autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives the best syntax highlighting
 autocmd FileType markdown setlocal wrap
 
+" NoOp Ctrl + A to avoid interaction with screen/Tmux
+let mapleader = "\<C-a>"
+noremap <Leader> <Nop>
+inoremap <Leader> <Nop>
+
+func! Map(shortcut, action)
+    execute "noremap " . a:shortcut a:action
+    execute "inoremap " . a:shortcut "<Esc>" . a:action
+    execute "tnoremap " . a:shortcut "<C-w>" . a:action
+endfunc
+
+" Screen/Tmux-style terminal split keybinds
+call Map("<Leader>v", ":rightb vert term ++kill=hup<CR>")
+call Map("<Leader>s", ":bel term ++kill=hup<CR>")
+call Map("<Leader>c", ":tab term ++kill=hup<CR>")
+call Map("<Leader><C-a>", "g<Tab>")
+for i in range(0, 9)
+    call Map("<Leader>" . i, i . "gt")
+endfor
+
 " Color scheme
 syntax on
 set background=dark
@@ -88,7 +107,6 @@ func! FindImpl(search)
     cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
     copen 25
 endfunc
-
 command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
@@ -96,5 +114,4 @@ func! GrepImpl(search)
     cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*}")
     copen 25
 endfunc
-
 command! -nargs=1 Grep call GrepImpl(<f-args>)
