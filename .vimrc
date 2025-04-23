@@ -22,17 +22,22 @@ set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
 let g:netrw_liststyle=0
-let g:netrw_bufsettings="nolist"
+let g:netrw_bufsettings="nolist nomodified"
 let g:netrw_banner=0
-let g:netrw_browse_split=0
+let g:netrw_browse_split=4
 let g:netrw_preview=1
-autocmd FileType netrw setlocal bufhidden=delete
 
 func! ToggleNetrw()
-    execute "Lex! | vert resize 30"
+    execute "Lex! | vert resize 40"
 endfunc
-
 noremap <CS-e> :call ToggleNetrw()<CR>
+
+func! SetNetrwKeybinds()
+    nmap h -
+    nmap l <CR>
+endfunc
+autocmd FileType netrw call SetNetrwKeybinds()
+
 
 " Indentation
 set expandtab
@@ -76,23 +81,8 @@ autocmd FileType markdown setlocal wrap
 
 " NoOp Ctrl + A to avoid interaction with screen/Tmux
 let mapleader = "\<C-a>"
-noremap <Leader> <Nop>
-inoremap <Leader> <Nop>
-
-func! Map(shortcut, action)
-    execute "noremap " . a:shortcut a:action
-    execute "inoremap " . a:shortcut "<Esc>" . a:action
-    execute "tnoremap " . a:shortcut "<C-w>" . a:action
-endfunc
-
-" Screen/Tmux-style terminal split keybinds
-call Map("<Leader>v", ":rightb vert term ++kill=hup<CR>")
-call Map("<Leader>s", ":bel term ++kill=hup<CR>")
-call Map("<Leader>c", ":tab term ++kill=hup<CR>")
-call Map("<Leader><C-a>", "g<Tab>")
-for i in range(0, 9)
-    call Map("<Leader>" . i, i . "gt")
-endfor
+noremap <C-a> <Nop>
+inoremap <C-a> <Nop>
 
 " Color scheme
 syntax on
@@ -115,3 +105,4 @@ func! GrepImpl(search)
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
+
