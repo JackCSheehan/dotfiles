@@ -1,21 +1,7 @@
-xterm*background: grey11
-xterm*foreground: lightyellow3
-xterm*faceName: B612 Mono:size=10:antialias=true
+xterm*background: gray11
+xterm*foreground: white
+xterm*faceName: Fira Code:size=10:antialias=true
 xterm*termName: xterm-256color
-xterm*color1: red3
-xterm*color2: springgreen4
-xterm*color3: orange3
-xterm*color4: deepskyblue
-xterm*color5: mediumvioletred
-xterm*color6: lightskyblue3
-xterm*color7: grey84
-xterm*color8: grey46
-xterm*color9: indianred1
-xterm*color10: darkolivegreen3
-xterm*color11: orange1
-xterm*color12: lightskyblue3
-xterm*color13: pink3
-xterm*color14: lightskyblue3
 
 xterm*copyToClipboard: true
 xterm*selectToClipboard: true

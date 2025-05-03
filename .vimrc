@@ -4,8 +4,6 @@ filetype on
 set number relativenumber
 set laststatus=2
 set scrolloff=20
-set cursorline
-set cursorlineopt=screenline
 set belloff=all
 set formatoptions+=r
 set nowrap
@@ -27,18 +25,6 @@ let g:netrw_banner=0
 let g:netrw_browse_split=4
 let g:netrw_preview=1
 
-func! ToggleNetrw()
-    execute "Lex! | vert resize 40"
-endfunc
-noremap <CS-e> :call ToggleNetrw()<CR>
-
-func! SetNetrwKeybinds()
-    nmap h -
-    nmap l <CR>
-endfunc
-autocmd FileType netrw call SetNetrwKeybinds()
-
-
 " Indentation
 set expandtab
 set tabstop=4
@@ -48,7 +34,6 @@ set autoindent
 
 " Visualize white space characters
 set lcs=space:·,tab:→⠀
-set list
 
 " Search settings
 set incsearch
@@ -85,11 +70,10 @@ noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
 " Color scheme
-syntax on
+colorscheme default
 set background=dark
-colorscheme retrobox
-hi SpecialKey ctermfg=237
-hi SpecialComment ctermfg=102
+set t_Co=16
+syntax on
 
 " Fuzzy file search
 func! FindImpl(search)
