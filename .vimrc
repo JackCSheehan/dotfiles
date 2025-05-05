@@ -10,7 +10,6 @@ set nowrap
 set linebreak
 set autoread
 au FileChangedShell * checktime
-set noea
 set errorformat+=%f
 
 " Statusline
@@ -65,7 +64,6 @@ autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives
 autocmd FileType markdown setlocal wrap
 
 " NoOp Ctrl + A to avoid interaction with screen/Tmux
-let mapleader = "\<C-a>"
 noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
