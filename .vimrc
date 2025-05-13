@@ -70,7 +70,7 @@ inoremap <C-a> <Nop>
 " Color scheme
 colorscheme default
 set background=dark
-set t_Co=16
+set t_Co=256
 syntax on
 
 " Fuzzy file search
