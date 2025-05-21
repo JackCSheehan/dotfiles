@@ -1,4 +1,4 @@
-xterm*background: gray11
+xterm*background: gray15
 xterm*foreground: white
 xterm*faceName: Fira Code:size=10:antialias=true
 xterm*termName: xterm-256color
