@@ -68,7 +68,7 @@ noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
 " Color scheme
-colorscheme default
+colorscheme onedark
 set background=dark
 set t_Co=256
 syntax on
