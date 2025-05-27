@@ -27,11 +27,13 @@ set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
-let g:netrw_liststyle=0
+let g:netrw_liststyle=1
 let g:netrw_bufsettings="nolist nomodified"
 let g:netrw_banner=0
 let g:netrw_browse_split=4
 let g:netrw_preview=1
+au FileType netrw nmap <buffer> h -
+au FileType netrw nmap <buffer> l <Return>
 
 " Indentation
 set expandtab
