@@ -1,2 +1,4 @@
-# Use vimdiff instead of built-in diff utility.
+# Use vimdiff instead of built-in diff utility. symbolic-ref is used to get the default branch on
+# the remote (which we'll assume is the target branch to merge into) and then we'll compare it
+# against the currently checked out branch locally.
 bind generic d >bash -c "git difftool $(git symbolic-ref refs/remotes/origin/HEAD --short)...%(branch) -- %(file)"
