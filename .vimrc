@@ -18,7 +18,16 @@ set tags=tags.swp
 au BufWritePost,VimEnter,DirChanged * call Tag()
 func! Tag()
     " Use .swp since it's already included in common .gitignore configs.
-    silent! !ctags -R -f tags.swp . --exclude=.git --exclude=node_modules --exclude=venv --exclude=".*" --exclude="__pyache__" --exclude="bazel-*" 2> /dev/null &
+    silent! !ctags
+        \ -R -f $(git rev-parse --show-toplevel 2>/dev/null || echo ~)/tags.swp
+        \ .
+        \ --exclude=.git
+        \ --exclude=node_modules
+        \ --exclude=venv
+        \ --exclude=".*"
+        \ --exclude="__pyache__"
+        \ --exclude="bazel-*"
+        \ 2> /dev/null &
 endfunc
 
 " Statusline
