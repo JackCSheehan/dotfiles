@@ -1,0 +1,2 @@
+# Use vimdiff instead of built-in diff utility.
+bind generic d >bash -c "git difftool $(git symbolic-ref refs/remotes/origin/HEAD --short)...%(branch) -- %(file)"
