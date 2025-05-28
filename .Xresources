@@ -1,7 +1,7 @@
 xterm*background: gray15
 xterm*foreground: white
 xterm*color4: dodgerblue2
-xterm*faceName: Fira Code:size=9:antialias=true
+xterm*faceName: JetBrains Mono:size=9:antialias=true
 xterm*termName: xterm-256color
 
 xterm*copyToClipboard: true
