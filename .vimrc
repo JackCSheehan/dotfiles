@@ -1,6 +1,8 @@
 " Editor settings
 set nocompatible
 filetype on
+set cursorline
+set cursorlineopt=screenline
 set number relativenumber
 set laststatus=2
 set scrolloff=20
