@@ -13,23 +13,6 @@ au FileChangedShell * checktime
 set errorformat+=%f
 set noesckeys
 
-" Tags
-set tags=tags.swp
-au BufWritePost,VimEnter,DirChanged * call Tag()
-func! Tag()
-    " Use .swp since it's already included in common .gitignore configs.
-    silent! !ctags
-        \ -R -f $(git rev-parse --show-toplevel 2>/dev/null || echo ~)/tags.swp
-        \ .
-        \ --exclude=.git
-        \ --exclude=node_modules
-        \ --exclude=venv
-        \ --exclude=".*"
-        \ --exclude="__pyache__"
-        \ --exclude="bazel-*"
-        \ 2> /dev/null &
-endfunc
-
 " Statusline
 set statusline=%f%m
 set statusline+=%=
@@ -103,7 +86,7 @@ command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
-    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\" --exclude=tags.swp")
+    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\")
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
