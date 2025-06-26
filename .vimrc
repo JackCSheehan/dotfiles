@@ -11,10 +11,18 @@ set formatoptions+=r
 set nowrap
 set linebreak
 set autoread
-au FileChangedShell * checktime
 set errorformat+=%f
 set noesckeys
 au FileType qf wincmd J
+au VimEnter * :term ++curwin
+au CursorHold * checktime
+
+" Gvim settings
+set guioptions -=m
+set guioptions -=T
+set guioptions -=r
+set guioptions -=L
+set guioptions -=e
 
 " Statusline
 set statusline=%f%m
@@ -29,6 +37,14 @@ let g:netrw_browse_split=4
 let g:netrw_preview=1
 au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
+
+" Terminal splits
+nnoremap <C-w>S :bo term ++kill=kill<Return>
+tnoremap <C-w>S <C-w>:bo term ++kill=kill<Return>
+nnoremap <C-w>V :rightb vert term ++kill=kill<Return>
+tnoremap <C-w>V <C-w>:rightb vert term ++kill=kill<Return>
+tnoremap <C-w>c <C-w>:q!<Return>
+au TerminalWinOpen * call term_setkill("", "kill")
 
 " Indentation
 set expandtab
@@ -140,4 +156,10 @@ func! ReviewImpl()
     call setbufvar("", "&statusline", "Modified files")
 endfunc
 command! Review call ReviewImpl()
+
+" Generate a tags file
+func! TagsImpl()
+    call system('ctags -R --exclude=".*" --exclude="__*" --exclude="*venv" --exclude="bazel-*" --exclude="node_modules"')
+endfunc
+command! Tags call TagsImpl()
 
