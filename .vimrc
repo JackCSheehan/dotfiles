@@ -14,7 +14,6 @@ set autoread
 set errorformat+=%f
 set noesckeys
 au FileType qf wincmd J
-au VimEnter * :term ++curwin
 au CursorHold * checktime
 
 " Gvim settings
