@@ -16,14 +16,6 @@ set noesckeys
 au FileType qf wincmd J
 au CursorHold * checktime
 
-" Gvim settings
-set guioptions -=m
-set guioptions -=T
-set guioptions -=r
-set guioptions -=L
-set guioptions -=e
-set guifont=JetBrains\ Mono
-
 " Statusline
 set statusline=%f%m
 set statusline+=%=
@@ -37,14 +29,6 @@ let g:netrw_browse_split=4
 let g:netrw_preview=1
 au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
-
-" Terminal splits
-nnoremap <C-w>S :bo term ++kill=kill<Return>
-tnoremap <C-w>S <C-w>:bo term ++kill=kill<Return>
-nnoremap <C-w>V :rightb vert term ++kill=kill<Return>
-tnoremap <C-w>V <C-w>:rightb vert term ++kill=kill<Return>
-tnoremap <C-w>c <C-w>:q!<Return>
-au TerminalWinOpen * call term_setkill("", "kill")
 
 " Indentation
 set expandtab
@@ -105,7 +89,7 @@ command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
-    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\"")
+    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\" --exclude=\"tags\"")
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
