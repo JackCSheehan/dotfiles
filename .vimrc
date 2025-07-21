@@ -22,12 +22,13 @@ set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
-let g:netrw_liststyle=3
+let g:netrw_liststyle=1
 let g:netrw_bufsettings="nolist nomodified"
 let g:netrw_banner=0
 let g:netrw_browse_split=4
 let g:netrw_preview=1
-noremap <C-b> :Lex! <CR> h
+noremap <C-b> :Lex! %:p:h <CR> h
+au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
 au FileType netrw wincmd L | :vert resize 40
 
