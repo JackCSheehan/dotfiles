@@ -154,7 +154,7 @@ command! Review call ReviewImpl()
 
 " Generate a tags file
 func! TagsImpl()
-    call system('ctags -R --exclude=".*" --exclude="__*" --exclude="*venv" --exclude="bazel-*" --exclude="node_modules"')
+    call system('ctags -R --exclude=".*" --exclude="__*" --exclude="*venv" --exclude="bazel-*" --exclude="node_modules" &')
 endfunc
 command! Tags call TagsImpl()
 
