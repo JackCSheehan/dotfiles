@@ -16,6 +16,15 @@ set noesckeys
 au FileType qf wincmd J
 au CursorHold * checktime
 
+" Gvim settings
+if has("gui_running")
+    set guioptions -=m
+    set guioptions -=T
+    set guioptions -=r
+    set guioptions -=L
+    set guioptions -=e
+endif
+
 " Statusline
 set statusline=%f%m
 set statusline+=%=
