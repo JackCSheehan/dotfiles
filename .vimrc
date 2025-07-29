@@ -23,6 +23,7 @@ if has("gui_running")
     set guioptions -=r
     set guioptions -=L
     set guioptions -=e
+    set clipboard=unnamedplus
 endif
 
 " Statusline
@@ -39,7 +40,6 @@ let g:netrw_preview=1
 noremap <C-b> :Lex! %:p:h <CR> h
 au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
-au FileType netrw wincmd L | :vert resize 40
 
 " Indentation
 set expandtab
@@ -100,7 +100,7 @@ command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
-    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\" --exclude=\"tags\"")
+    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\" --exclude=\"*tags*\"")
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
@@ -153,8 +153,9 @@ endfunc
 command! Review call ReviewImpl()
 
 " Generate a tags file
+au BufWritePost,VimEnter,DirChanged * call TagsImpl()
 func! TagsImpl()
-    call system('ctags -R --exclude=".*" --exclude="__*" --exclude="*venv" --exclude="bazel-*" --exclude="node_modules" &')
+    call system('(ctags -R --exclude=".*" --exclude="__*" --exclude="*venv" --exclude="bazel-*" --exclude="node_modules" --languages="C,C++,Python,Rust,JavaScript,Go,Vim" -f tags.swp && mv tags.swp tags && rm tags.swp) &')
 endfunc
 command! Tags call TagsImpl()
 
