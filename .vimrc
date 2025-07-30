@@ -15,6 +15,7 @@ set errorformat+=%f
 set noesckeys
 au FileType qf wincmd J
 au CursorHold * checktime
+set timeoutlen=1000
 
 " Gvim settings
 if has("gui_running")
@@ -25,6 +26,17 @@ if has("gui_running")
     set guioptions -=e
     set clipboard=unnamedplus
 endif
+
+" Buffer shortcuts
+nnoremap bn :bn<CR>
+nnoremap bp :bp<CR>
+nnoremap bl :ls<CR>:b
+
+" Quickfix shortcuts
+nnoremap qn :cn<CR>
+nnoremap qp :cp<CR>
+nnoremap qo :co<CR>
+nnoremap qc :ccl<CR>
 
 " Statusline
 set statusline=%f%m
