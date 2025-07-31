@@ -112,7 +112,7 @@ command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
-    cgete system("grep -irn " . a:search . " --exclude-dir={venv,node_modules,.*,__pycache__,bazel-*} --exclude=\"*.swp\" --exclude=\"*tags*\"")
+    cgete system("rp -in " . a:search . " --vimgrep")
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
