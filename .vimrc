@@ -112,7 +112,7 @@ command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
-    cgete system("rp -in " . a:search . " --vimgrep")
+    cgete system("rg -in " . a:search . " --vimgrep")
     copen 25
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
