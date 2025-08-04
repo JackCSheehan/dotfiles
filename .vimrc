@@ -106,14 +106,14 @@ syntax on
 func! FindImpl(search)
     let search = substitute(a:search, " ", "*", "g")
     cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
-    copen 25
+    copen 15
 endfunc
 command! -nargs=1 Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
     cgete system("rg -in " . a:search . " --vimgrep")
-    copen 25
+    copen 15
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
 
