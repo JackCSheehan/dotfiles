@@ -27,17 +27,6 @@ if has("gui_running")
     set clipboard=unnamedplus
 endif
 
-" Buffer shortcuts
-nnoremap bn :bn<CR>
-nnoremap bp :bp<CR>
-nnoremap bl :ls<CR>:b
-
-" Quickfix shortcuts
-nnoremap qn :cn<CR>
-nnoremap qp :cp<CR>
-nnoremap qo :co<CR>
-nnoremap qc :ccl<CR>
-
 " Statusline
 set statusline=%f%m
 set statusline+=%=
