@@ -59,6 +59,7 @@ set wildmenu
 set wildmode=list:longest
 set ignorecase
 set smartcase
+set tagcase=match
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
