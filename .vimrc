@@ -60,6 +60,7 @@ set wildmode=list:longest
 set ignorecase
 set smartcase
 set tagcase=match
+set tags=tags
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
