@@ -61,6 +61,7 @@ set ignorecase
 set smartcase
 set tagcase=match
 set tags=tags
+set nocscopetag
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
