@@ -61,7 +61,7 @@ set ignorecase
 set smartcase
 set tagcase=match
 set tags=tags
-set complete-=t
+set complete=.,w,b,u
 set nocscopetag
 
 " Allow navigating through soft line wraps
