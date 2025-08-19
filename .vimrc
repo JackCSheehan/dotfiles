@@ -19,11 +19,11 @@ set timeoutlen=1000
 
 " Gvim settings
 if has("gui_running")
-    set guioptions -=m
-    set guioptions -=T
-    set guioptions -=r
-    set guioptions -=L
-    set guioptions -=e
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=L
+    set guioptions-=e
     set clipboard=unnamedplus
 endif
 
@@ -61,6 +61,7 @@ set ignorecase
 set smartcase
 set tagcase=match
 set tags=tags
+set complete-=t
 set nocscopetag
 
 " Allow navigating through soft line wraps
