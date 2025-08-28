@@ -27,6 +27,7 @@ if has("gui_running")
     set guioptions-=e
     set clipboard=unnamedplus
     set guifont=JetBrains\ Mono:h10
+    set backspace=indent,eol,start
 endif
 
 " Statusline
