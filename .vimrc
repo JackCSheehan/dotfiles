@@ -15,7 +15,8 @@ set errorformat+=%f
 set noesckeys
 au FileType qf wincmd J
 au CursorHold * checktime
-set timeoutlen=1000
+set splitright
+set splitbelow
 
 " Gvim settings
 if has("gui_running")
@@ -25,6 +26,7 @@ if has("gui_running")
     set guioptions-=L
     set guioptions-=e
     set clipboard=unnamedplus
+    set guifont=JetBrains\ Mono:h10
 endif
 
 " Statusline
