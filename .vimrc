@@ -17,6 +17,7 @@ au FileType qf wincmd J
 au CursorHold * checktime
 set splitright
 set splitbelow
+set noshowmatch
 
 " Gvim settings
 if has("gui_running")
