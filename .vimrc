@@ -18,6 +18,7 @@ au CursorHold * checktime
 set splitright
 set splitbelow
 set noshowmatch
+set textwidth=100
 
 " Gvim settings
 if has("gui_running")
@@ -167,3 +168,45 @@ func! TagsImpl()
 endfunc
 command! Tags call TagsImpl()
 
+" Tmux emulation
+func! TmuxImpl()
+    set noswapfile
+    set showtabline=2
+    set laststatus=0
+    set fillchars=vert:│,stl:─,stlnc:─
+    set statusline=─
+
+    func! TmuxTabLine()
+        let s = ""
+        for i in range(tabpagenr("$"))
+            if i + 1 == tabpagenr()
+              let s ..= "%#TabLineSel#"
+            else
+              let s ..= "%#TabLine#"
+            endif
+
+            let s ..= "%" .. (i + 1) .. "T"
+            let s ..= i .. " "
+        endfor
+
+        let s ..= "%#TabLineFill#%T"
+
+        return s
+    endfunc
+    set tabline=%!TmuxTabLine()
+
+    " Default to opening a terminal
+    term ++curwin
+
+    " Deconflict with nested vim window shortcuts
+    set termwinkey=<C-a>
+
+    tnoremap <C-a>v <C-a>:vert term<CR>
+    tnoremap <C-a>s <C-a>:term<CR>
+    tnoremap <C-a>c <C-a>:tab term<CR>
+    tnoremap <C-a>& <C-a>:tabc!<CR>
+    tnoremap <C-a>x <C-a>:q!<CR>
+    command! KillSession :qa!
+    tnoremap <C-a>d <C-a>:suspend<CR>
+endfunc
+command! -nargs=1 Tmux call TmuxImpl()

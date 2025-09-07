@@ -1,0 +1,18 @@
+;; General editor settings.
+(load-theme 'leuven-dark)
+(global-display-line-numbers-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+(setq use-file-dialog nil)
+(pixel-scroll-precision-mode 1)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+;;(setq viper-inhibit-startup-message 't)
+;;(setq viper-expert-level '5)
+;;(setq viper-mode t)
+;;(require 'viper)
