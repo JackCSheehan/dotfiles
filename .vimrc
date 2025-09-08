@@ -18,7 +18,8 @@ au CursorHold * checktime
 set splitright
 set splitbelow
 set noshowmatch
-set textwidth=100
+set textwidth=0
+set wrapmargin=0
 
 " Gvim settings
 if has("gui_running")
