@@ -1,5 +1,5 @@
 ;; General editor settings.
-(load-theme 'leuven-dark)
+(load-theme 'tango-dark)
 (global-display-line-numbers-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
