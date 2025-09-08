@@ -87,6 +87,7 @@ autocmd FileType go setlocal noexpandtab         " gofmt enforces tabs
 autocmd FileType bzl setlocal syntax=python      " Starlark is Python-like, so this gives the best syntax highlighting
 autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives the best syntax highlighting
 autocmd FileType markdown setlocal wrap
+autocmd FileType rst setlocal wrap
 
 " NoOp Ctrl + A to avoid interaction with screen/Tmux
 noremap <C-a> <Nop>
