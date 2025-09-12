@@ -7,7 +7,6 @@
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message nil)
 (setq use-file-dialog nil)
-(pixel-scroll-precision-mode 1)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
