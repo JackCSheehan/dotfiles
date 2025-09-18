@@ -6,7 +6,6 @@
 (blink-cursor-mode -1)
 (save-place-mode +1)
 (column-number-mode +1)
-(global-goto-address-mode +1)
 (setopt use-short-answers t)
 (setq-default inhibit-startup-screen t)
 (setq-default initial-scratch-message nil)
