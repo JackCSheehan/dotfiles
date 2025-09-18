@@ -29,3 +29,7 @@
 (setq-default viper-expert-level '5)
 (setq-default viper-mode t)
 (require 'viper)
+
+;; Terminals
+(add-hook 'term-mode-hook (lambda () (term-set-escape-char ?\C-x)))
+
