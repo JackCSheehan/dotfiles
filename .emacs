@@ -11,6 +11,7 @@
 (setq-default initial-scratch-message nil)
 (setq-default use-file-dialog nil)
 (setq-default make-backup-files nil)
+(setq-default blink-matching-paren nil)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (global-set-key (kbd "RET") (key-binding (kbd "M-j")))
 (setq-default comment-multi-line t)
