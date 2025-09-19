@@ -1,0 +1,12 @@
+xterm*background: gray15
+xterm*foreground: white
+xterm*color4: dodgerblue2
+xterm*faceName: JetBrains Mono:size=9:antialias=true
+xterm*termName: xterm-256color
+
+xterm*copyToClipboard: true
+xterm*selectToClipboard: true
+xterm*scrollBar: false
+xterm*disallowedWindowOps: 20,21,SetXprop
+
+Emacs.useXIM: false
