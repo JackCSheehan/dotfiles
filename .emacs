@@ -11,10 +11,13 @@
 (setq-default initial-scratch-message nil)
 (setq-default use-file-dialog nil)
 (setq-default make-backup-files nil)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(global-set-key (kbd "RET") (key-binding (kbd "M-j")))
+(setq-default comment-multi-line t)
 
 ;; Line numbers
 (global-display-line-numbers-mode 1)
-(setq-default display-line-numbers 'relative)
+(setq-default display-line-numbers-type 'relative)
 
 ;; Indentation
 (setq-default indent-tabs-mode nil)
@@ -31,4 +34,3 @@
 
 ;; Terminals
 (add-hook 'term-mode-hook (lambda () (term-set-escape-char ?\C-x)))
-
