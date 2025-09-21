@@ -11,7 +11,10 @@
 (setq-default initial-scratch-message nil)
 (setq-default use-file-dialog nil)
 (setq-default make-backup-files nil)
+(setq-default ring-bell-function 'ignore)
 (setq-default blink-matching-paren nil)
+(setq-default show-paren-delay 0)
+(show-paren-mode 1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (global-set-key (kbd "RET") (key-binding (kbd "M-j")))
 (setq-default comment-multi-line t)
@@ -31,6 +34,9 @@
 (setq-default viper-inhibit-startup-message 't)
 (setq-default viper-expert-level '5)
 (setq-default viper-mode t)
+(setq-default viper-shift-width 4)
+(setq-default viper-ex-style-motion nil)
+(setq-default viper-ex-style-editing nil)
 (require 'viper)
 
 ;; Terminals
