@@ -43,10 +43,6 @@
 (setq-default viper-shift-width 4)
 (setq-default viper-ex-style-motion nil)
 (setq-default viper-ex-style-editing nil)
-(global-set-key (kbd "j") (key-binding (kbd "C-n")))
-(global-set-key (kbd "k") (key-binding (kbd "C-p")))
-(global-set-key (kbd "h") (key-binding (kbd "C-b")))
-(global-set-key (kbd "l") (key-binding (kbd "C-f")))
 (require 'viper)
 
 ;; Terminals
