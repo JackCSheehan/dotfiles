@@ -20,6 +20,7 @@
 (global-set-key (kbd "RET") (key-binding (kbd "M-j")))
 
 ;; Grep
+(setopt grep-command "grep -irn ")
 (global-set-key (kbd "C-c g") 'grep)
 
 ;; Find
