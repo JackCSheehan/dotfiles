@@ -6,6 +6,7 @@
 (blink-cursor-mode -1)
 (save-place-mode +1)
 (column-number-mode +1)
+(global-auto-revert-mode 1)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq-default inhibit-startup-screen t)
 (setq-default initial-scratch-message nil)
