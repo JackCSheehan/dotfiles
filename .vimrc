@@ -20,6 +20,7 @@ set splitbelow
 set noshowmatch
 set textwidth=0
 set wrapmargin=0
+set hidden
 
 " Gvim settings
 if has("gui_running")
@@ -94,6 +95,10 @@ autocmd FileType rst setlocal wrap
 noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
+" Buffer management
+nnoremap <C-b> :ls<Return>:b#
+tnoremap <C-b> <C-w>:ls<Return>:b#
+
 " Color scheme
 colorscheme onedark
 set background=dark
@@ -104,16 +109,18 @@ syntax on
 func! FindImpl(search)
     let search = substitute(a:search, " ", "*", "g")
     cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
-    copen 15
+    copen
 endfunc
 command! -nargs=1 Find call FindImpl(<f-args>)
+nnoremap <C-f> :Find 
 
 " Recursive grep
 func! GrepImpl(search)
     cgete system("rg -in " . a:search . " --vimgrep --glob=!tags")
-    copen 15
+    copen
 endfunc
 command! -nargs=1 Grep call GrepImpl(<f-args>)
+nnoremap <C-g> :Grep 
 
 " Diff review for PR reviews. Call from command line directly with 'vim -c Review'
 func! ReviewImpl()
