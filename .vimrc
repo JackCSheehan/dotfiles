@@ -110,6 +110,64 @@ set background=dark
 set t_Co=256
 syntax on
 
+" Eshell-style REPL for vimscript
+func! VshellImpl()
+    func! VshellEval(text)
+        let lower_text = tolower(a:text)
+
+        " Handle clearing the shell
+        if lower_text == "clear" || lower_text == "cls"
+            :%d
+            return
+        endif
+
+        " Pass anything else to execute
+        let line_num = line(".") - 1
+        try
+            call append(line_num, trim(execute(a:text)))
+        catc
+            call append(line_num, trim(v:exception))
+        endtry
+    endfunc!
+
+    enew
+    setlocal buftype=prompt
+    setlocal nonumber norelativenumber nomodified
+    call prompt_setcallback(bufnr(), function("VshellEval"))
+    norm i
+    file vshell
+endfunc
+command! Vshell call VshellImpl()
+
+" Project management
+if !isdirectory("~/.vim/sessions/")
+    call mkdir("~/.vim/sessions/")
+endif
+
+func! ProjectLoad()
+    let project_name = tolower(input("Project name: "))
+
+    " Clear out current buffers
+    bufdo bd
+    enew
+
+    let session_dir = "~/.vim/sessions/" . tolower(project_name)
+    let session_path = session_dir . "/session.vim"
+
+    " Load session
+    source session_path
+    let &tags = session_dir . "/tags"
+endfunc
+nnoremap <C-p>l :call ProjectLoad()
+tnoremap <C-p>l <C-w>:call ProjectLoad()
+
+func! ProjectDelete()
+    let project_name = tolower(input("Project name: "))
+    delete("~/.vim/sessions/" . project_name, "rf")
+endfunc
+nnoremap <C-p>d :call ProjectDelete()
+tnoremap <C-p>d <C-w>:call ProjectDelete()
+
 " Fuzzy file search
 func! Find()
     let search = input("Find wildcard: ")
@@ -249,3 +307,4 @@ func! TmuxImpl(session_name)
     tnoremap <C-a>d <C-a>:suspend<CR>
 endfunc
 command! -nargs=1 Tmux call TmuxImpl(<f-args>)
+
