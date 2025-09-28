@@ -43,7 +43,6 @@ let g:netrw_bufsettings="nolist nomodified"
 let g:netrw_banner=0
 let g:netrw_browse_split=4
 let g:netrw_preview=1
-noremap <C-b> :Lex! %:p:h <CR> h
 au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
 
@@ -96,8 +95,14 @@ noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
 " Buffer management
-nnoremap <C-b> :ls<Return>:b#
-tnoremap <C-b> <C-w>:ls<Return>:b#
+nnoremap <C-b>l :ls<Return>:b
+tnoremap <C-b>l <C-w>:ls<Return>:b
+nnoremap <C-b>n :bn<Return>
+tnoremap <C-b>n <C-w>:bn<Return>
+nnoremap <C-b>p :bp<Return>
+tnoremap <C-b>p <C-w>:bp<Return>
+nnoremap <C-b><C-b> :b#<Return>
+tnoremap <C-b><C-b> <C-w>:b#<Return>
 
 " Color scheme
 colorscheme onedark
@@ -106,21 +111,23 @@ set t_Co=256
 syntax on
 
 " Fuzzy file search
-func! FindImpl(search)
-    let search = substitute(a:search, " ", "*", "g")
+func! Find()
+    let search = input("Find wildcard: ")
+    let search = substitute(search, " ", "*", "g")
     cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
     copen
 endfunc
-command! -nargs=1 Find call FindImpl(<f-args>)
-nnoremap <C-f> :Find 
+nnoremap <C-f> :call Find()<Return>
+tnoremap <C-f> <C-w>:call Find()<Return>
 
 " Recursive grep
-func! GrepImpl(search)
-    cgete system("rg -in " . a:search . " --vimgrep --glob=!tags")
+func! Grep()
+    let search = input("Grep input: ")
+    cgete system("grep -irn " . search)
     copen
 endfunc
-command! -nargs=1 Grep call GrepImpl(<f-args>)
-nnoremap <C-g> :Grep 
+nnoremap <C-g> :call Grep()<Return>
+tnoremap <C-g> <C-w>:call Grep()<Return>
 
 " Diff review for PR reviews. Call from command line directly with 'vim -c Review'
 func! ReviewImpl()
