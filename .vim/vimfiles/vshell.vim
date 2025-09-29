@@ -13,18 +13,22 @@ func! VshellImpl()
         " Pass anything else to execute.
         let line_num = line(".") - 1
         try
-            call append(line_num, trim(execute(a:text)))
+            call append(line_num, split(trim(execute(a:text)), "\n"))
         catch
-            call append(line_num, trim(v:exception))
+            call append(line_num, split(trim(v:exception), "\n"))
         endtry
     endfunc!
 
+    " Set up new buffer for shell.
     enew
     setlocal buftype=prompt
     setlocal nonumber norelativenumber nomodified
     call prompt_setcallback(bufnr(), function("VshellEval"))
-    norm i
     file vshell
+
+    " Tab completion for vimscript functions.
+    inoremap <buffer> <Tab> <C-x><C-v>
+    startinsert
 endfunc
 command! Vshell call VshellImpl()
 
