@@ -22,6 +22,7 @@ set textwidth=0
 set wrapmargin=0
 set hidden
 set nomagic
+set runtimepath+=~/.vim
 
 " Gvim settings
 if has("gui_running")
