@@ -5,7 +5,7 @@ let g:project_name = ""
 call mkdir(g:projects_dir, "p")
 
 " Helper function to sanitize a raw project name input.
-func! FixProjectName(raw_project_name)
+func! s:fixProjectName(raw_project_name)
     return tolower(substitute(a:raw_project_name, " ", "_", "g"))
 endfunc
 
@@ -39,7 +39,7 @@ func! ProjectOpen()
     endif
     
     call ProjectList()
-    let project_name = FixProjectName(input("Open project: "))
+    let project_name = fixProjectName(input("Open project: "))
     if project_name == ""
         return
     endif
@@ -66,7 +66,7 @@ tnoremap <C-p>o <C-w>:call ProjectOpen()<Return>
 " Deletes a project.
 func! ProjectDelete()
     call ProjectList()
-    let project_name = FixProjectName(input("Delete project: "))
+    let project_name = fixProjectName(input("Delete project: "))
     if project_name == ""
         return
     endif
@@ -87,7 +87,7 @@ func! ProjectSave()
     if g:project_name != ""
         execute("mksession! " . v:this_session)
     else
-        let project_name = FixProjectName(input("New project: "))
+        let project_name = fixProjectName(input("New project: "))
         let g:project_name = project_name
 
         call mkdir(g:projects_dir . project_name, "p")

@@ -21,6 +21,7 @@ set noshowmatch
 set textwidth=0
 set wrapmargin=0
 set hidden
+set nomagic
 
 " Gvim settings
 if has("gui_running")

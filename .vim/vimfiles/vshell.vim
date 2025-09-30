@@ -2,11 +2,14 @@
 func! VshellImpl()
     " Evaluates a single line of input.
     func! VshellEval(text)
-        let lower_text = tolower(a:text)
+        let lower_text = trim(tolower(a:text))
 
         " Handle clearing the window.
         if lower_text == "clear" || lower_text == "cls"
             :%d
+            return
+        elseif lower_text == "exit"
+            :q!
             return
         endif
 
