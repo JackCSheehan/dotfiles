@@ -2,14 +2,18 @@
 func! VshellImpl()
     " Evaluates a single line of input.
     func! VshellEval(text)
-        let lower_text = trim(tolower(a:text))
+        let trimmed_text = trim(a:text)
 
         " Handle clearing the window.
-        if lower_text == "clear" || lower_text == "cls"
-            :%d
+        if trimmed_text == "clear" || trimmed_text == "cls"
+            %d
             return
-        elseif lower_text == "exit"
-            :q!
+        elseif stridx(trimmed_text, "h ") == 0 || stridx(trimmed_text, "help ") == 0
+            let search_term = join(split(trimmed_text, " ")[1:], "")
+            execute("vert help " . search_term)
+            return
+        elseif trimmed_text == "exit"
+            q!
             return
         endif
 
@@ -24,8 +28,12 @@ func! VshellImpl()
 
     " Set up new buffer for shell.
     enew
-    setlocal buftype=prompt
-    setlocal nonumber norelativenumber nomodified
+    setlocal buftype=prompt bufhidden=delete nonumber norelativenumber
+
+    " QuitPre covers quitting in the vshell buffer and BufLeave handles leaving the buffer first
+    " and quitting from another buffer.
+    au QuitPre,BufLeave,ModeChanged <buffer> setlocal nomodified
+
     call prompt_setcallback(bufnr(), function("VshellEval"))
     file vshell
 

@@ -23,6 +23,7 @@ set wrapmargin=0
 set hidden
 set nomagic
 set runtimepath+=~/.vim
+set sessionoptions-=options
 
 " Gvim settings
 if has("gui_running")
@@ -101,6 +102,8 @@ noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
 " Buffer management
+nnoremap <C-b> <Nop>
+tnoremap <C-b> <Nop>
 nnoremap <C-b>l :ls<Return>:b
 tnoremap <C-b>l <C-w>:ls<Return>:b
 nnoremap <C-b>n :bn<Return>
@@ -115,6 +118,9 @@ colorscheme onedark
 set background=dark
 set t_Co=256
 syntax on
+
+" Terminal
+au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 
 " Import external vimfiles
 source ~/.vim/vimfiles/project.vim
