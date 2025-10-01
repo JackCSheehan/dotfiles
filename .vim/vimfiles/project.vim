@@ -4,6 +4,12 @@ let g:project_name = ""
 
 call mkdir(g:projects_dir, "p")
 
+if has("win32")
+    let g:path_separator = "\\"
+else
+    let g:path_separator = "\/"
+endif
+
 " Helper function to sanitize a raw project name input.
 func! s:fixProjectName(raw_project_name) abort
     return tolower(substitute(a:raw_project_name, " ", "_", "g"))
@@ -25,7 +31,7 @@ func! ProjectList() abort
         return
     endif
     for project in projects
-        echo split(project, "\/")[-1]
+        echo split(project, g:path_separator)[-1]
     endfor
 endfunc
 nnoremap <C-p>l :call ProjectList()<Return>
