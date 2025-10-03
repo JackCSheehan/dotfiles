@@ -137,6 +137,10 @@ tnoremap <C-w>S <C-w>:term<Enter>
 " Tabs
 nnoremap <C-w>t :tabnew<Enter>
 tnoremap <C-w>t <C-w>:tabnew<Enter>
+nnoremap <Tab> gt
+tnoremap <C-w><Tab> <C-w>gt
+nnoremap <S-Tab> gT
+tnoremap <C-w><S-Tab> <C-w>gT
 
 " Import external vimfiles
 source ~/.vim/vimfiles/project.vim
