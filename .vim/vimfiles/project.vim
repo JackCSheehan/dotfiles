@@ -35,7 +35,6 @@ func! ProjectList() abort
     endfor
 endfunc
 nnoremap <C-p>l :call ProjectList()<Return>
-tnoremap <C-p>l <C-w>:call ProjectList()<Return>
 
 " Helper function to handle unloading the current project.
 func! s:projectUnload() abort
@@ -76,7 +75,6 @@ func! ProjectOpen() abort
     let &tags = session_dir . "/tags"
 endfunc
 nnoremap <C-p>o :call ProjectOpen()<Return>
-tnoremap <C-p>o <C-w>:call ProjectOpen()<Return>
 
 " Deletes a project.
 func! ProjectDelete() abort
@@ -94,7 +92,6 @@ func! ProjectDelete() abort
     endif
 endfunc
 nnoremap <C-p>d :call ProjectDelete()<Return>
-tnoremap <C-p>d <C-w>:call ProjectDelete()<Return>
 
 " Creates a new project directory and writes a vim session to disk.
 func! ProjectSave() abort
@@ -110,7 +107,6 @@ func! ProjectSave() abort
     endif
 endfunc
 nnoremap <C-p>s :call ProjectSave()<Return>
-tnoremap <C-p>s <C-w>:call ProjectSave()<Return>
 
 " Like project save, but always creates a new project.
 func! ProjectNew() abort
@@ -124,5 +120,4 @@ func! ProjectNew() abort
     call ProjectSave()
 endfunc
 nnoremap <C-p>n :call ProjectNew()<Return>
-tnoremap <C-p>n <C-w>:call ProjectNew()<Return>
 

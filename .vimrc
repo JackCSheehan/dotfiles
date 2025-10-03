@@ -21,7 +21,6 @@ set noshowmatch
 set textwidth=0
 set wrapmargin=0
 set hidden
-set nomagic
 set runtimepath+=~/.vim
 set sessionoptions-=options
 
@@ -33,6 +32,12 @@ if has("gui_running")
     set guioptions-=L
     set guioptions-=e
     set backspace=indent,eol,start
+
+    if has("win32")
+        set guifont=JetBrains\ Mono:h10
+    else
+        set guifont=JetBrains\ Mono\ 10
+    endif
 endif
 
 " Statusline
@@ -121,6 +126,15 @@ syntax on
 
 " Terminal
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
+tnoremap <S-Space> <Nop>
+nnoremap <C-w>V :vert term<Enter>
+tnoremap <C-w>V <C-w>:vert term<Enter>
+nnoremap <C-w>S :term<Enter>
+tnoremap <C-w>S <C-w>:term<Enter>
+
+" Tabs
+nnoremap <C-w>t :tabnew<Enter>
+tnoremap <C-w>t <C-w>:tabnew<Enter>
 
 " Import external vimfiles
 source ~/.vim/vimfiles/project.vim
@@ -130,6 +144,7 @@ source ~/.vim/vimfiles/review.vim
 
 " Fuzzy file search
 func! Find()
+    ccl
     let search = input("Find wildcard: ")
     let search = substitute(search, " ", "*", "g")
     cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
@@ -140,6 +155,7 @@ tnoremap <C-f> <C-w>:call Find()<Return>
 
 " Recursive grep
 func! Grep()
+    ccl
     let search = input("Grep input: ")
     cgete system("grep -irn " . search)
     copen
