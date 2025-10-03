@@ -20,7 +20,6 @@ set splitbelow
 set noshowmatch
 set textwidth=0
 set wrapmargin=0
-set hidden
 set runtimepath+=~/.vim
 set sessionoptions-=options
 
@@ -127,6 +126,9 @@ syntax on
 " Terminal
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 tnoremap <S-Space> <Nop>
+tnoremap <S-Insert> <C-w>"+
+tnoremap <C-w>c <C-w>:q!<Return>
+tnoremap <C-w>q <C-w>:q!<Return>
 nnoremap <C-w>V :vert term<Enter>
 tnoremap <C-w>V <C-w>:vert term<Enter>
 nnoremap <C-w>S :term<Enter>
