@@ -1,10 +1,9 @@
-" Editor settings
+" General settings
 set nocompatible
 filetype on
 set cursorline
 set cursorlineopt=screenline
 set number relativenumber
-set laststatus=2
 set scrolloff=15
 set belloff=all
 set formatoptions+=r
@@ -13,8 +12,6 @@ set linebreak
 set autoread
 set errorformat+=%f
 set noesckeys
-au FileType qf wincmd J
-au CursorHold * checktime
 set splitright
 set splitbelow
 set noshowmatch
@@ -22,6 +19,13 @@ set textwidth=0
 set wrapmargin=0
 set runtimepath+=~/.vim
 set sessionoptions-=options
+
+" General autocmds
+au FileType qf wincmd J | resize 25
+au VimResized * wincmd =
+
+" General remaps
+inoremap <S-Insert> <Esc>"+pa
 
 " Gvim settings
 if has("gui_running")
@@ -31,15 +35,17 @@ if has("gui_running")
     set guioptions-=L
     set guioptions-=e
     set backspace=indent,eol,start
+    set guicursor+=a:blinkon0
 
     if has("win32")
-        set guifont=JetBrains\ Mono:h10
+        set guifont=JetBrains\ Mono:h11
     else
-        set guifont=JetBrains\ Mono\ 10
+        set guifont=JetBrains\ Mono\ 11
     endif
 endif
 
 " Statusline
+set laststatus=2
 set statusline=%{g:project_name!=''?'['.g:project_name.']\ ':''}%f%m
 set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
@@ -108,12 +114,12 @@ inoremap <C-a> <Nop>
 " Buffer management
 nnoremap <C-b> <Nop>
 tnoremap <C-b> <Nop>
-nnoremap <C-b>l :ls<Return>:b
-tnoremap <C-b>l <C-w>:ls<Return>:b
-nnoremap <C-b>n :bn<Return>
-tnoremap <C-b>n <C-w>:bn<Return>
-nnoremap <C-b>p :bp<Return>
-tnoremap <C-b>p <C-w>:bp<Return>
+nnoremap <C-b><C-l> :ls<Return>:b
+tnoremap <C-b><C-l> <C-w>:ls<Return>:b
+nnoremap <C-b><C-n> :bn<Return>
+tnoremap <C-b><C-n> <C-w>:bn<Return>
+nnoremap <C-b><C-p> :bp<Return>
+tnoremap <C-b><C-p> <C-w>:bp<Return>
 nnoremap <C-b><C-b> :b#<Return>
 tnoremap <C-b><C-b> <C-w>:b#<Return>
 
@@ -126,7 +132,10 @@ syntax on
 " Terminal
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 tnoremap <S-Space> <Nop>
+tnoremap <C-Return> <Nop>
 tnoremap <S-Insert> <C-w>"+
+" Fixes delay when switching to prev window from terminal
+tnoremap <C-w><C-w> <C-w><C-w>
 tnoremap <C-w>c <C-w>:q!<Return>
 tnoremap <C-w>q <C-w>:q!<Return>
 nnoremap <C-w>V :vert term<Enter>
