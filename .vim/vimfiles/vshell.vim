@@ -24,7 +24,15 @@ func! VshellImpl()
         catch
             call append(line_num, split(trim(v:exception), "\n"))
         endtry
-    endfunc!
+    endfunc
+    
+    " Helper function to set the prompt buffer prompt.
+    func! VshellSetPrompt()
+        " Replace home path with "~"
+        let home_dir = expand("~")
+        let prompt_path = substitute(getcwd(), home_dir, "~", "g")
+        call prompt_setprompt(bufnr(), prompt_path . " % ")
+    endfunc
 
     " Set up new buffer for shell.
     enew
@@ -34,7 +42,10 @@ func! VshellImpl()
     " and quitting from another buffer.
     au QuitPre,BufLeave,ModeChanged <buffer> setlocal nomodified
 
+    au DirChanged <buffer> call VshellSetPrompt()
+    call VshellSetPrompt()
     call prompt_setcallback(bufnr(), function("VshellEval"))
+
     file vshell
 
     " Tab completion for vimscript functions.
