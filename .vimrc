@@ -17,8 +17,11 @@ set splitbelow
 set noshowmatch
 set textwidth=0
 set wrapmargin=0
-set runtimepath+=~/.vim
 set sessionoptions-=options
+
+if has("win32")
+    set runtimepath+=~/.vim
+endif
 
 " General autocmds
 au FileType qf wincmd J | resize 25
@@ -131,6 +134,7 @@ syntax on
 
 " Terminal
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
+au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . "\nclear || cls\n")
 tnoremap <S-Space> <Nop>
 tnoremap <C-Return> <Nop>
 tnoremap <S-Insert> <C-w>"+
