@@ -53,7 +53,10 @@ au VimResized * wincmd =
 
 " Make C-c work the same as c to close in windcmds.
 nnoremap <C-w><C-c> <C-w>c
-tnoremap <C-w><C-c> <C-w>c
+
+" Don't block closing current terminal buffer on running job.
+tnoremap <C-w><C-c> <C-w>:q!<Return>
+tnoremap <C-w>c <C-w>:q!<Return>
 
 " Statusline
 set laststatus=2
@@ -151,10 +154,6 @@ tnoremap <C-Return> <Nop>
 
 " Fix delay when switching to prev window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
-
-" Don't block closing terminals on running jobs.
-tnoremap <C-w><C-c> <C-w>:q!<Return>
-tnoremap <C-w>c <C-w>:q!<Return>
 
 " Shortcuts for splitting terminal buffers.
 nnoremap <C-w>V :vert term<Enter>
