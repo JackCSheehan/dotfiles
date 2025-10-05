@@ -20,15 +20,9 @@ set wrapmargin=0
 set sessionoptions-=options
 
 if has("win32")
+    " This path is not set by default in Windows, so add it to make it align with Linux.
     set runtimepath+=~/.vim
 endif
-
-" General autocmds
-au FileType qf wincmd J | resize 25
-au VimResized * wincmd =
-
-" General remaps
-inoremap <S-Insert> <Esc>"+pa
 
 " Gvim settings
 if has("gui_running")
@@ -40,12 +34,26 @@ if has("gui_running")
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
 
+    " Allow shift-insert to paste from clipboard like in terminal emulators.
+    inoremap <S-Insert> <Esc>"+pa
+    tnoremap <S-Insert> <C-w>"+
+
     if has("win32")
         set guifont=JetBrains\ Mono:h15
     else
         set guifont=JetBrains\ Mono\ 15
     endif
 endif
+
+" Ensure quickfix buffer is always at the bottom and has a default size.
+au FileType qf wincmd J | resize 25
+
+" Ensure windows are equalized when Vim is resized.
+au VimResized * wincmd =
+
+" Make C-c work the same as c to close in windcmds.
+nnoremap <C-w><C-c> <C-w>c
+tnoremap <C-w><C-c> <C-w>c
 
 " Statusline
 set laststatus=2
@@ -72,9 +80,8 @@ set autoindent
 " Visualize white space characters
 set lcs=space:·,tab:→⠀
 
-" Abbreviations
-cnoreabbrev vterm vert term
-cnoreabbrev h vert h
+" Open help in a vertical split.
+au FileType help wincmd L
 
 " Search settings
 set incsearch
@@ -132,22 +139,30 @@ set background=dark
 set t_Co=256
 syntax on
 
-" Terminal
+" Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
+
+" Make cwd match the current buffer.
 au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . "\nclear || cls\n")
+
+" NoOp keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Nop>
 tnoremap <C-Return> <Nop>
-tnoremap <S-Insert> <C-w>"+
-" Fixes delay when switching to prev window from terminal
+
+" Fix delay when switching to prev window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
+
+" Don't block closing terminals on running jobs.
+tnoremap <C-w><C-c> <C-w>:q!<Return>
 tnoremap <C-w>c <C-w>:q!<Return>
-tnoremap <C-w>q <C-w>:q!<Return>
+
+" Shortcuts for splitting terminal buffers.
 nnoremap <C-w>V :vert term<Enter>
 tnoremap <C-w>V <C-w>:vert term<Enter>
 nnoremap <C-w>S :term<Enter>
 tnoremap <C-w>S <C-w>:term<Enter>
 
-" Tabs
+" Tab shortcuts.
 nnoremap <C-w>t :tabnew<Enter>
 tnoremap <C-w>t <C-w>:tabnew<Enter>
 nnoremap <Tab> gt
