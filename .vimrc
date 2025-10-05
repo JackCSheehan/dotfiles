@@ -38,9 +38,9 @@ if has("gui_running")
     set guicursor+=a:blinkon0
 
     if has("win32")
-        set guifont=JetBrains\ Mono:h11
+        set guifont=JetBrains\ Mono:h15
     else
-        set guifont=JetBrains\ Mono\ 11
+        set guifont=JetBrains\ Mono\ 15
     endif
 endif
 
