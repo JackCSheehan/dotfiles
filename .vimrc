@@ -39,23 +39,19 @@ if has("gui_running")
     tnoremap <S-Insert> <C-w>"+
 
     if has("win32")
-        set guifont=JetBrains\ Mono:h15
+        set guifont=JetBrains\ Mono:h11
     else
-        set guifont=JetBrains\ Mono\ 15
+        set guifont=JetBrains\ Mono\ 11
     endif
 endif
 
 " Ensure quickfix buffer is always at the bottom and has a default size.
-au FileType qf wincmd J | resize 25
+au FileType qf wincmd J | resize 20
 
 " Ensure windows are equalized when Vim is resized.
 au VimResized * wincmd =
 
-" Make C-c work the same as c to close in windcmds.
-nnoremap <C-w><C-c> <C-w>c
-
 " Don't block closing current terminal buffer on running job.
-tnoremap <C-w><C-c> <C-w>:q!<Return>
 tnoremap <C-w>c <C-w>:q!<Return>
 
 " Statusline
@@ -185,6 +181,20 @@ func! Find()
 endfunc
 nnoremap <C-f> :call Find()<Return>
 tnoremap <C-f> <C-w>:call Find()<Return>
+
+" Fizzy file search in pure Vim script.
+func! Vfind()
+    let start = reltime()
+    ccl
+
+    " Make spaces the same as "*".
+    let pattern = substitute(input("Find pattern: "), " ", "*", "g")
+    let files = map(globpath(".", "**/*" . pattern . "*", 0, 1), '{"filename": v:val}')
+
+    call setqflist(files)
+    copen
+    echo "Completed in " . trim(reltimestr(reltime(start))) . " seconds"
+endfunc
 
 " Recursive grep
 func! Grep()
