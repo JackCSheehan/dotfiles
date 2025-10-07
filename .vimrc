@@ -122,15 +122,10 @@ inoremap <C-a> <Nop>
 
 " Buffer management
 nnoremap <C-b> <Nop>
-tnoremap <C-b> <Nop>
 nnoremap <C-b><C-l> :ls<Return>:b
-tnoremap <C-b><C-l> <C-w>:ls<Return>:b
 nnoremap <C-b><C-n> :bn<Return>
-tnoremap <C-b><C-n> <C-w>:bn<Return>
 nnoremap <C-b><C-p> :bp<Return>
-tnoremap <C-b><C-p> <C-w>:bp<Return>
 nnoremap <C-b><C-b> :b#<Return>
-tnoremap <C-b><C-b> <C-w>:b#<Return>
 
 " Color scheme
 colorscheme onedark
@@ -144,9 +139,9 @@ au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 " Make cwd match the current buffer.
 au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . "\nclear || cls\n")
 
-" NoOp keybinds that insert control characters into terminal buffers.
-tnoremap <S-Space> <Nop>
-tnoremap <C-Return> <Nop>
+" Fix keybinds that insert control characters into terminal buffers.
+tnoremap <S-Space> <Space>
+tnoremap <C-Return> <Return>
 
 " Fix delay when switching to prev window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
@@ -180,7 +175,6 @@ func! Find()
     copen
 endfunc
 nnoremap <C-f> :call Find()<Return>
-tnoremap <C-f> <C-w>:call Find()<Return>
 
 " Fizzy file search in pure Vim script.
 func! Vfind()
