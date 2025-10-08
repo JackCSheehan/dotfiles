@@ -6,5 +6,8 @@ if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
 fi
 export PATH
 
+alias ll="ls -l"
+alias la="ls -a"
+
 PS1="\[\e[0;92m\]\u@\h\[\e[m\]:\[\e[0;94m\]\w\[\e[m\]\\$ "
 
