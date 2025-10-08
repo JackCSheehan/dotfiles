@@ -22,6 +22,21 @@ set sessionoptions-=options
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
     set runtimepath+=~/.vim
+
+    " GNU readline-like keybinds for use in the Windows shells.
+    tnoremap <C-a> <Home>
+    tnoremap <C-e> <End>
+    tnoremap <C-f> <Right>
+    tnoremap <C-b> <Left>
+    tnoremap <C-p> <Up>
+    tnoremap <C-n> <Down>
+    tnoremap <C-d> <Delete>
+    tnoremap <C-c> <C-c><Esc>
+
+    " Cls works in both Powershell and cmd.
+    let g:clear_command = "\rcls\r"
+else
+    let g:clear_command = "\nclear\n"
 endif
 
 " Gvim settings
@@ -33,6 +48,9 @@ if has("gui_running")
     set guioptions-=e
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
+
+    " Not all terminal emulators support non-ASCII, so only set this for Gvim.
+    set fillchars+=vert:│
 
     " Allow shift-insert to paste from clipboard like in terminal emulators.
     inoremap <S-Insert> <Esc>"+pa
@@ -120,13 +138,6 @@ autocmd FileType rst setlocal wrap
 noremap <C-a> <Nop>
 inoremap <C-a> <Nop>
 
-" Buffer management
-nnoremap <C-b> <Nop>
-nnoremap <C-b><C-l> :ls<Return>:b
-nnoremap <C-b><C-n> :bn<Return>
-nnoremap <C-b><C-p> :bp<Return>
-nnoremap <C-b><C-b> :b#<Return>
-
 " Color scheme
 colorscheme onedark
 set background=dark
@@ -137,7 +148,7 @@ syntax on
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 
 " Make cwd match the current buffer.
-au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . "\nclear || cls\n")
+au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . g:clear_command)
 
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
@@ -151,13 +162,17 @@ nnoremap <C-w>V :vert term<Enter>
 tnoremap <C-w>V <C-w>:vert term<Enter>
 nnoremap <C-w>S :term<Enter>
 tnoremap <C-w>S <C-w>:term<Enter>
+tnoremap <C-w>s <C-w>:new<Enter>
+tnoremap <C-w>v <C-w>:vnew<Enter>
 
 " Tab shortcuts.
 nnoremap <C-w>t :tabnew<Enter>
 tnoremap <C-w>t <C-w>:tabnew<Enter>
 nnoremap <Tab> gt
+nnoremap <C-w><Tab> gt
 tnoremap <C-w><Tab> <C-w>gt
 nnoremap <S-Tab> gT
+nnoremap <C-w><S-Tab> gT
 tnoremap <C-w><S-Tab> <C-w>gT
 
 " Import external vimfiles
@@ -176,7 +191,7 @@ func! Find()
 endfunc
 nnoremap <C-f> :call Find()<Return>
 
-" Fizzy file search in pure Vim script.
+" Fuzzy file search in pure Vim script.
 func! Vfind()
     let start = reltime()
     ccl
