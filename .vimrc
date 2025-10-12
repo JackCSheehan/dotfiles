@@ -46,6 +46,7 @@ if has("gui_running")
     set guioptions-=r
     set guioptions-=L
     set guioptions-=e
+    set guioptions+=c
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
 
@@ -71,6 +72,10 @@ au VimResized * wincmd =
 
 " Don't block closing current terminal buffer on running job.
 tnoremap <C-w>c <C-w>:q!<Return>
+
+" Don't block making current window the only one on jobs running in other windows' terminal buffers.
+nnoremap <C-w>o :only!<Return>
+tnoremap <C-w>o <C-w>:only!<Return>
 
 " Statusline
 set laststatus=2
@@ -208,8 +213,12 @@ endfunc
 " Recursive grep
 func! Grep()
     ccl
-    let search = input("Grep input: ")
-    cgete system("grep -irn " . search)
+    let search = input("Grep: ")
+    if has("win32")
+        cgete system("findstr /i /s /n " . search)
+    else
+        cgete system("grep -irn " . search)
+    endif
     copen
 endfunc
 nnoremap <C-g> :call Grep()<Return>
