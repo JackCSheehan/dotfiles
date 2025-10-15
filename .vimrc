@@ -32,11 +32,6 @@ if has("win32")
     tnoremap <C-n> <Down>
     tnoremap <C-d> <Delete>
     tnoremap <C-c> <C-c><Esc>
-
-    " Cls works in both Powershell and cmd.
-    let g:clear_command = "\rcls\r"
-else
-    let g:clear_command = "\nclear\n"
 endif
 
 " Gvim settings
@@ -47,6 +42,7 @@ if has("gui_running")
     set guioptions-=L
     set guioptions-=e
     set guioptions+=c
+    set mouse=
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
 
@@ -152,12 +148,10 @@ syntax on
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 
-" Make cwd match the current buffer.
-au TerminalWinOpen * call term_sendkeys(bufnr(), "cd " . expand("#:h") . g:clear_command)
-
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
+tnoremap <C-Backspace> <Backspace>
 
 " Fix delay when switching to prev window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
@@ -187,40 +181,21 @@ source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 
 " Fuzzy file search
-func! Find()
+func! FindImpl(search)
     ccl
-    let search = input("Find wildcard: ")
-    let search = substitute(search, " ", "*", "g")
-    cgete system("find . -type f -path '*" . search . "*' ! -path '*venv*' ! -path '*/.*' ! -path '*/__pycache__' ! -path '*/node_modules' ! -path '*/bazel-*' -printf '%P\n' 2>/dev/null")
+    let search = substitute(a:search, " ", "*", "g")
+    cgete system("git ls-files \"*" . search . "*\"")
     copen
+    let w:quickfix_title = search
 endfunc
-nnoremap <C-f> :call Find()<Return>
-
-" Fuzzy file search in pure Vim script.
-func! Vfind()
-    let start = reltime()
-    ccl
-
-    " Make spaces the same as "*".
-    let pattern = substitute(input("Find pattern: "), " ", "*", "g")
-    let files = map(globpath(".", "**/*" . pattern . "*", 0, 1), '{"filename": v:val}')
-
-    call setqflist(files)
-    copen
-    echo "Completed in " . trim(reltimestr(reltime(start))) . " seconds"
-endfunc
+command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
 
 " Recursive grep
-func! Grep()
+func! GrepImpl(search)
     ccl
-    let search = input("Grep: ")
-    if has("win32")
-        cgete system("findstr /i /s /n " . search)
-    else
-        cgete system("grep -irn " . search)
-    endif
+    cgete system("git grep -in " . a:search)
     copen
+    let w:quickfix_title = a:search
 endfunc
-nnoremap <C-g> :call Grep()<Return>
-tnoremap <C-g> <C-w>:call Grep()<Return>
+command! -nargs=1 -complete=file Grep call GrepImpl(<f-args>)
 
