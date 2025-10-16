@@ -42,9 +42,23 @@ if has("gui_running")
     set guioptions-=L
     set guioptions-=e
     set guioptions+=c
-    set mouse=
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
+
+    " Disable the mouse.
+    set mouse=
+    nnoremap <ScrollWheelUp> <Nop>
+    inoremap <ScrollWheelUp> <Nop>
+    tnoremap <ScrollWheelUp> <Nop>
+    nnoremap <ScrollWheelDown> <Nop>
+    inoremap <ScrollWheelDown> <Nop>
+    tnoremap <ScrollWheelDown> <Nop>
+    nnoremap <ScrollWheelLeft> <Nop>
+    inoremap <ScrollWheelLeft> <Nop>
+    tnoremap <ScrollWheelLeft> <Nop>
+    nnoremap <ScrollWheelRight> <Nop>
+    inoremap <ScrollWheelRight> <Nop>
+    tnoremap <ScrollWheelRight> <Nop>
 
     " Not all terminal emulators support non-ASCII, so only set this for Gvim.
     set fillchars+=vert:│
@@ -61,7 +75,7 @@ if has("gui_running")
 endif
 
 " Ensure quickfix buffer is always at the bottom and has a default size.
-au FileType qf wincmd J | resize 20
+au FileType qf wincmd J | resize 12
 
 " Ensure windows are equalized when Vim is resized.
 au VimResized * wincmd =
@@ -75,7 +89,7 @@ tnoremap <C-w>o <C-w>:only!<Return>
 
 " Statusline
 set laststatus=2
-set statusline=%{g:project_name!=''?'['.g:project_name.']\ ':''}%f%m
+set statusline=%f%m
 set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
 
@@ -175,10 +189,10 @@ nnoremap <C-w><S-Tab> gT
 tnoremap <C-w><S-Tab> <C-w>gT
 
 " Import external vimfiles
-source ~/.vim/vimfiles/project.vim
 source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
+source ~/.vim/vimfiles/sessions.vim
 
 " Fuzzy file search
 func! FindImpl(search)
@@ -192,10 +206,20 @@ command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
+    if trim(a:search) == ""
+        return
+    endif
+
     ccl
     cgete system("git grep -in " . a:search)
     copen
     let w:quickfix_title = a:search
+
+    " Search grep term so that it's highlighted in the quickfix list.
+    let highlight_search = trim(split(a:search, "--")[0])
+    let @/ = highlight_search
+    silent! normal! n
+    redraw!
 endfunc
 command! -nargs=1 -complete=file Grep call GrepImpl(<f-args>)
 
