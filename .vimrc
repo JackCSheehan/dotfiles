@@ -181,6 +181,8 @@ tnoremap <C-w>v <C-w>:vnew<Enter>
 " Tab shortcuts.
 nnoremap <C-w>t :tabnew<Enter>
 tnoremap <C-w>t <C-w>:tabnew<Enter>
+nnoremap <C-w>T :tab term<Enter>
+tnoremap <C-w>T <C-w>:tab term<Enter>
 nnoremap <Tab> gt
 nnoremap <C-w><Tab> gt
 tnoremap <C-w><Tab> <C-w>gt
