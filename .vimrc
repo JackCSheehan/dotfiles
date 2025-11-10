@@ -36,6 +36,7 @@ endif
 
 " Gvim settings
 if has("gui_running")
+    " General Gvim settings.
     set guioptions-=m
     set guioptions-=T
     set guioptions-=r
@@ -72,6 +73,13 @@ if has("gui_running")
     else
         set guifont=JetBrains\ Mono\ 11
     endif
+
+    " Make Gvim title the current working directory.
+    func! SetTitleString()
+        let &titlestring = substitute(getcwd(), expand("~"), "~", "g")
+    endfunc
+    call SetTitleString()
+    au DirChanged * call SetTitleString()
 endif
 
 " Ensure quickfix buffer is always at the bottom and has a default size.
