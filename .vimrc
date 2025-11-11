@@ -23,6 +23,8 @@ if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
     set runtimepath+=~/.vim
 
+    set shell=powershell
+
     " GNU readline-like keybinds for use in the Windows shells.
     tnoremap <C-a> <Home>
     tnoremap <C-e> <End>
@@ -80,6 +82,10 @@ if has("gui_running")
     endfunc
     call SetTitleString()
     au DirChanged * call SetTitleString()
+
+    " Gvim's embedded terminal doesn't support these GNU readline shortcuts even on Linux.
+    tnoremap <M-f> <C-Right>
+    tnoremap <M-b> <C-Left>
 endif
 
 " Ensure quickfix buffer is always at the bottom and has a default size.
