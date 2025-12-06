@@ -47,6 +47,7 @@ if has("gui_running")
     set guioptions+=c
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
+    set lines=40 columns=140
 
     " Disable the mouse.
     set mouse=
@@ -175,6 +176,10 @@ syntax on
 
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
+
+" Allow "full-screening" a window.
+nnoremap <C-w>+ :vert resize 999 \| resize 999<Enter>
+tnoremap <C-w>+ <C-w>:vert resize 999 \| resize 999<Enter>
 
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
