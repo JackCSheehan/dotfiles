@@ -4,7 +4,7 @@ filetype on
 set cursorline
 set cursorlineopt=screenline
 set number relativenumber
-set scrolloff=15
+set scrolloff=12
 set belloff=all
 set formatoptions+=r
 set nowrap
@@ -15,7 +15,7 @@ set noesckeys
 set splitright
 set splitbelow
 set noshowmatch
-set textwidth=0
+set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
 
@@ -72,9 +72,9 @@ if has("gui_running")
     tnoremap <S-Insert> <C-w>"+
 
     if has("win32")
-        set guifont=JetBrains\ Mono:h11
+        set guifont=JetBrains\ Mono:h10
     else
-        set guifont=JetBrains\ Mono\ 11
+        set guifont=JetBrains\ Mono\ 10
     endif
 
     " Make Gvim title the current working directory.
@@ -134,7 +134,11 @@ au FileType help wincmd L
 set incsearch
 set hlsearch
 set wildmenu
-set wildmode=list:longest
+set wildmode=longest:full
+if has("patch-8.2.4325")
+    set wildoptions=pum
+endif
+set wildcharm=<Tab>
 set ignorecase
 set smartcase
 set tagcase=match
@@ -186,6 +190,23 @@ tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
 tnoremap <C-Backspace> <Backspace>
 
+" Make Ctrl + Backspace backspace a full word. Note that this might not work in some terminal
+" emulators.
+inoremap <C-Backspace> <C-w>
+cnoremap <C-Backspace> <C-w>
+
+" GNU readline shortcuts in command mode.
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+cnoremap <C-d> <Delete>
+cnoremap <M-f> <S-Right>
+cnoremap <M-b> <S-Left>
+
+" Allow shift-insert to paste from clipboard like in terminal emulators.
+cnoremap <S-Insert> <C-r>+
+
 " Fix delay when switching to prev window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
 
@@ -214,6 +235,7 @@ source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/sessions.vim
+source ~/.vim/vimfiles/snippets.vim
 
 " Fuzzy file search
 func! FindImpl(search)
@@ -235,12 +257,15 @@ func! GrepImpl(search)
     cgete system("git grep -in " . a:search)
     copen
     let w:quickfix_title = a:search
-
-    " Search grep term so that it's highlighted in the quickfix list.
-    let highlight_search = trim(split(a:search, "--")[0])
-    let @/ = highlight_search
-    silent! normal! n
-    redraw!
 endfunc
 command! -nargs=1 -complete=file Grep call GrepImpl(<f-args>)
+
+" Load git diff patch file.
+func! GitDiff() abort
+    enew
+    let patch = trim(system("git diff"))
+    call setline(1, split(patch, "\n"))
+    setlocal filetype=diff nomodifiable nomodified
+endfunc
+command! -nargs=0 GitDiff call GitDiff(<f-args>)
 
