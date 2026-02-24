@@ -65,6 +65,17 @@ func! VshellImpl()
     " and quitting from another buffer.
     au QuitPre,BufLeave,ModeChanged <buffer> setlocal nomodified
 
+
+    " ANSI colors.
+    highlight AnsiRed guifg=red ctermfg=red
+    highlight AnsiGreen guifg=green ctermfg=green
+    highlight AnsiCyan guifg=cyan ctermfg=cyan
+
+    " Handle ANSI codes.
+    syntax region AnsiRed matchgroup=Conceal start='\e\[31m' end='\e\[\d*m' concealends
+    syntax region AnsiGreen matchgroup=Conceal start='\e\[32m' end='\e\[\d*m' concealends
+    syntax region AnsiCyan matchgroup=Conceal start='\e\[36m' end='\e\[\d*m' concealends
+
     " Update the prompt when directory changes.
     au DirChanged <buffer> call VshellSetPrompt()
     call VshellSetPrompt()

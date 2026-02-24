@@ -224,6 +224,38 @@ func! Snippetpythonmain(...)
     startinsert!
 endfunc
 
+" --- Terminal Snippets ---
+
+" Sources a Python venv.
+func! Snippetterminalvenv(...)
+    if has("win32")
+        call s:Insert(["venv\\Scripts\\activate"])
+    else
+        call s:Insert([". venv/bin/activate"])
+    endif
+endfunc
+
+" --- Vimscript Snippets ---
+
+" Creates a custom command.
+func! Snippetvimcommand(...)
+    call s:Insert([
+        \"command! -nargs=n -complete=customlist,CompleteFunction CommandName :call CommandFunction(<f-args>)",
+    \])
+endfunc
+
+" Creates a custom snippet function.
+func! Snippetvimsnippet(...)
+    call s:Insert([
+        \'" Header comment.',
+        \"func! Snippetlangname(...)",
+        \"    call s:Insert([",
+        \"        \\\"\"",
+        \"    \\])",
+        \"endfunc",
+    \])
+endfunc
+
 " Completion function for Snippet command.
 func! s:SnippetComplete(A, L, P)
     if &buftype == "terminal"

@@ -109,7 +109,7 @@ set statusline+=%=
 set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
-let g:netrw_liststyle=1
+let g:netrw_liststyle=3
 let g:netrw_bufsettings="nolist nomodified"
 let g:netrw_banner=0
 let g:netrw_browse_split=4
@@ -177,6 +177,7 @@ colorscheme onedark
 set background=dark
 set t_Co=256
 syntax on
+set conceallevel=3
 
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
@@ -234,7 +235,6 @@ tnoremap <C-w><S-Tab> <C-w>gT
 source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
-source ~/.vim/vimfiles/sessions.vim
 source ~/.vim/vimfiles/snippets.vim
 
 " Fuzzy file search
@@ -268,4 +268,3 @@ func! GitDiff() abort
     setlocal filetype=diff nomodifiable nomodified
 endfunc
 command! -nargs=0 GitDiff call GitDiff(<f-args>)
-
