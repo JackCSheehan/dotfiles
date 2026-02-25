@@ -1,11 +1,18 @@
 " Eshell-style REPL for vimscript.
-func! VshellImpl()
+
+func! VshellImpl() abort
+    let vshell_command_history = []
+    let vshell_command_index = 0
+
     " Evaluates a single line of input.
-    func! VshellEval(text)
+    func! VshellEval(text) closure
         let trimmed_text = trim(a:text)
         if trimmed_text == ""
             return
         endif
+
+        call add(vshell_command_history, trimmed_text)
+        let vshell_command_index = len(vshell_command_history) - 1
 
         let split_input = filter(split(trimmed_text, " "), 'v:val != ""')
         let cmd = split_input[0]
@@ -48,7 +55,7 @@ func! VshellImpl()
             call append(line_num, split(trim(v:exception), "\n"))
         endtry
     endfunc
-    
+
     " Helper function to set the prompt buffer prompt.
     func! VshellSetPrompt()
         " Replace home path with "~".
@@ -59,22 +66,27 @@ func! VshellImpl()
 
     " Set up new buffer for shell.
     enew
+    file vshell
     setlocal buftype=prompt bufhidden=delete wrap nonumber norelativenumber
 
     " QuitPre covers quitting in the vshell buffer and BufLeave handles leaving the buffer first
     " and quitting from another buffer.
     au QuitPre,BufLeave,ModeChanged <buffer> setlocal nomodified
 
-
     " ANSI colors.
     highlight AnsiRed guifg=red ctermfg=red
     highlight AnsiGreen guifg=green ctermfg=green
     highlight AnsiCyan guifg=cyan ctermfg=cyan
+    highlight AnsiBold gui=bold cterm=bold
 
     " Handle ANSI codes.
-    syntax region AnsiRed matchgroup=Conceal start='\e\[31m' end='\e\[\d*m' concealends
-    syntax region AnsiGreen matchgroup=Conceal start='\e\[32m' end='\e\[\d*m' concealends
-    syntax region AnsiCyan matchgroup=Conceal start='\e\[36m' end='\e\[\d*m' concealends
+    syntax region AnsiRed matchgroup=Conceal start='\e\[31m' end='\e\[[0]*m' concealends
+    syntax region AnsiGreen matchgroup=Conceal start='\e\[32m' end='\e\[[0]*m' concealends
+    syntax region AnsiCyan matchgroup=Conceal start='\e\[36m' end='\e\[[0]*m' concealends
+    syntax region AnsiBold matchgroup=Conceal start='\e\[1m' end='\e\[[0]*m' concealends
+
+    " Any remaining reset codes need to be concealed.
+    syntax match Conceal /\e\[[0]*m/ conceal
 
     " Update the prompt when directory changes.
     au DirChanged <buffer> call VshellSetPrompt()
@@ -82,10 +94,35 @@ func! VshellImpl()
 
     call prompt_setcallback(bufnr(), function("VshellEval"))
 
-    file vshell
-
     " Tab completion for paths.
     inoremap <buffer> <Tab> <C-x><C-f>
+
+    func! ComputeCommandHistory(inc) closure
+        " Clear out any command currently entered.
+        norm dd
+        startinsert
+
+        let command = vshell_command_history[vshell_command_index]
+
+        let vshell_command_index += a:inc
+
+        " Handle wrapping the index around if neede.
+        if vshell_command_index < 0
+            let vshell_command_index = len(vshell_command_history) - 1
+        elseif vshell_command_index >= len(vshell_command_history)
+            let vshell_command_index = 0
+        endif
+
+        return command
+    endfunc
+
+    " Command history.
+    inoremap <buffer> <silent> <C-p> <C-r>=ComputeCommandHistory(-1)<Cr>
+    inoremap <buffer> <silent> <C-n> <C-r>=ComputeCommandHistory(1)<Cr>
+
+    " Ctrl-L to clear screen.
+    inoremap <buffer> <silent> <C-l> <Esc>%d
+
     startinsert
 endfunc
 command! Vshell call VshellImpl()
