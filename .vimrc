@@ -18,6 +18,7 @@ set noshowmatch
 set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
+noh
 
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
@@ -236,6 +237,7 @@ source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
+source ~/.vim/vimfiles/closing.vim
 
 " Fuzzy file search
 func! FindImpl(search)
@@ -268,3 +270,4 @@ func! GitDiff() abort
     setlocal filetype=diff nomodifiable nomodified
 endfunc
 command! -nargs=0 GitDiff call GitDiff(<f-args>)
+

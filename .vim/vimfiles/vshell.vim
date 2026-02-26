@@ -41,7 +41,7 @@ func! VshellImpl() abort
             execute("next! " . joined_args)
             return
         elseif cmd == "cd"
-            execute("cd " . joined_args)
+            execute("lcd " . joined_args)
             return
         elseif cmd == "exit" || cmd == "q" || cmd == "quit"
             q!
@@ -96,34 +96,54 @@ func! VshellImpl() abort
 
     " Tab completion for paths.
     inoremap <buffer> <Tab> <C-x><C-f>
-
-    func! ComputeCommandHistory(inc) closure
-        " Clear out any command currently entered.
+    
+    " Helper function to clear the current line.
+    func! ClearLine()
         norm dd
         startinsert
+    endfunc
+
+    " Helper function to handle command pulling commands from the command history.
+    func! ComputeCommandHistory(inc) closure
+        call ClearLine()
 
         let command = vshell_command_history[vshell_command_index]
 
         let vshell_command_index += a:inc
 
-        " Handle wrapping the index around if neede.
+        " Prevent exceeding bounds.
         if vshell_command_index < 0
-            let vshell_command_index = len(vshell_command_history) - 1
-        elseif vshell_command_index >= len(vshell_command_history)
             let vshell_command_index = 0
+        elseif vshell_command_index >= len(vshell_command_history)
+            let vshell_command_index = len(vshell_command_history) - 1
+            call ClearLine()
         endif
 
         return command
     endfunc
 
     " Command history.
-    inoremap <buffer> <silent> <C-p> <C-r>=ComputeCommandHistory(-1)<Cr>
-    inoremap <buffer> <silent> <C-n> <C-r>=ComputeCommandHistory(1)<Cr>
+    inoremap <buffer> <silent> <C-p> <C-r>=ComputeCommandHistory(-1)<Return>
+    inoremap <buffer> <silent> <C-n> <C-r>=ComputeCommandHistory(1)<Return>
 
     " Ctrl-L to clear screen.
-    inoremap <buffer> <silent> <C-l> <Esc>%d
+    inoremap <buffer> <silent> <C-l> <Esc>:%d<Cr>i
+
+    " GNU readline shortcuts.
+    inoremap <buffer> <silent> <C-a> <Home>
+    inoremap <buffer> <silent> <C-e> <End>
+    inoremap <buffer> <silent> <C-f> <Right>
+    inoremap <buffer> <silent> <C-b> <Left>
+    inoremap <buffer> <silent> <C-d> <Delete>
+    inoremap <buffer> <silent> <M-f> <S-Right>
+    inoremap <buffer> <silent> <M-b> <S-Left>
+
+    " Many terminal emulators will clear out the current line on Ctrl-C, so match that behavior.
+    inoremap <buffer> <C-c> <Nop>
+    inoremap <buffer> <silent> <C-c> <C-o>:call ClearLine()<Return>
 
     startinsert
 endfunc
+
 command! Vshell call VshellImpl()
 
