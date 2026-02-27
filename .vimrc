@@ -18,7 +18,6 @@ set noshowmatch
 set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
-noh
 
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
@@ -193,7 +192,7 @@ tnoremap <C-Return> <Return>
 tnoremap <C-Backspace> <Backspace>
 
 " Make Ctrl + Backspace backspace a full word. Note that this might not work in some terminal
-" emulators.
+" emulators, but it does work in Gvim.
 inoremap <C-Backspace> <C-w>
 cnoremap <C-Backspace> <C-w>
 
