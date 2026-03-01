@@ -18,6 +18,7 @@ set noshowmatch
 set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
+set fillchars=eob:\ 
 
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
@@ -110,12 +111,18 @@ set statusline+=Ln\ %l/%L\ Col\ %v
 
 " netrw
 let g:netrw_liststyle=3
-let g:netrw_bufsettings="nolist nomodified"
+let g:netrw_bufsettings="nolist nomodified statusline=%f bufhidden=delete"
 let g:netrw_banner=0
 let g:netrw_browse_split=4
 let g:netrw_preview=1
 au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
+au FileType netrw vert resize 40
+au FileType netrw call execute("file netrw - " . getcwd())
+au BufEnter * if winnr("$") == 1 && &filetype == "netrw" | q | endif
+inoremap <silent> <C-e> <Esc>:Lex!<Return>
+nnoremap <silent> <C-e> :Lex!<Return>
+tnoremap <silent> <C-e> <C-w>:Lex!<Return>
 
 " Indentation
 set expandtab
@@ -178,6 +185,7 @@ set background=dark
 set t_Co=256
 syntax on
 set conceallevel=3
+set concealcursor=nvic
 
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
@@ -269,4 +277,11 @@ func! GitDiff() abort
     setlocal filetype=diff nomodifiable nomodified
 endfunc
 command! -nargs=0 GitDiff call GitDiff(<f-args>)
+
+" Run universal ctags.
+func! Tags() abort
+    " Call ctags, but have it write to .tags.swp and rename it to "tags" when done. This will ensure
+    " that we can continue to use an existing tags file while a new one is being generated.
+    call system("ctags --recurse --languages=AnsiblePlaybook,C,C#,C++,CSS,Erlang,Go,Java,JavaScript,Julia,Kotlin,Lua,Matlab,PHP,Perl,PowerShell,Python,PuppetManifest,Ruby,Rust,Terraform,TerraformVariabes,Vim,Sh,TypeScript -f /tmp/.tags.swp && mv /tmp/.tags.swp /tmp/tags")
+endfunc
 

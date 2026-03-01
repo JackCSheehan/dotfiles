@@ -61,13 +61,13 @@ func! VshellImpl() abort
         " Replace home path with "~".
         let home_dir = expand("~")
         let prompt_path = substitute(getcwd(), home_dir, "~", "g")
-        call prompt_setprompt(bufnr(), prompt_path . "% ")
+        call prompt_setprompt(bufnr(), "\e[32m" . prompt_path . "\e[m\e[36m ʌ\e[m ")
     endfunc
 
     " Set up new buffer for shell.
     enew
     file vshell
-    setlocal buftype=prompt bufhidden=delete wrap nonumber norelativenumber
+    setlocal buftype=prompt bufhidden=delete wrap nonumber norelativenumber noswapfile
 
     " QuitPre covers quitting in the vshell buffer and BufLeave handles leaving the buffer first
     " and quitting from another buffer.
@@ -105,10 +105,13 @@ func! VshellImpl() abort
 
     " Helper function to handle command pulling commands from the command history.
     func! ComputeCommandHistory(inc) closure
+        if len(vshell_command_history) == 0
+            return ""
+        endif
+
         call ClearLine()
 
         let command = vshell_command_history[vshell_command_index]
-
         let vshell_command_index += a:inc
 
         " Prevent exceeding bounds.
@@ -116,7 +119,6 @@ func! VshellImpl() abort
             let vshell_command_index = 0
         elseif vshell_command_index >= len(vshell_command_history)
             let vshell_command_index = len(vshell_command_history) - 1
-            call ClearLine()
         endif
 
         return command
