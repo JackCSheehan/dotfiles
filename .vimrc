@@ -282,6 +282,6 @@ command! -nargs=0 GitDiff call GitDiff(<f-args>)
 func! Tags() abort
     " Call ctags, but have it write to .tags.swp and rename it to "tags" when done. This will ensure
     " that we can continue to use an existing tags file while a new one is being generated.
-    call system("ctags --recurse --languages=AnsiblePlaybook,C,C#,C++,CSS,Erlang,Go,Java,JavaScript,Julia,Kotlin,Lua,Matlab,PHP,Perl,PowerShell,Python,PuppetManifest,Ruby,Rust,Terraform,TerraformVariabes,Vim,Sh,TypeScript -f /tmp/.tags.swp && mv /tmp/.tags.swp /tmp/tags")
+    call system("ctags --recurse --languages=AnsiblePlaybook,C,C#,C++,CSS,Erlang,Go,Java,JavaScript,Julia,Kotlin,Lua,Matlab,PHP,Perl,PowerShell,Python,PuppetManifest,Ruby,Rust,Terraform,TerraformVariabes,Vim,Sh,TypeScript -f .tags.swp && mv .tags.swp tags")
 endfunc
 
