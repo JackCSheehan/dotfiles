@@ -6,7 +6,9 @@ set cursorlineopt=screenline
 set number relativenumber
 set scrolloff=12
 set belloff=all
-set formatoptions+=r
+set formatoptions+=rj
+set formatoptions-=t
+set nojoinspaces
 set nowrap
 set linebreak
 set autoread
@@ -18,7 +20,7 @@ set noshowmatch
 set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
-set fillchars=eob:\ 
+set sidescroll=1
 
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
@@ -93,6 +95,25 @@ endif
 " Ensure quickfix buffer is always at the bottom and has a default size.
 au FileType qf wincmd J | resize 12
 
+" Close Vim if quickfix window is the last window left.
+au BufEnter * if winnr("$") == 1 && &filetype == "qf" | q | endif
+
+" Helper function which handles moving the cursor back to the quickfix list after selecting an item
+" in the list.
+func! HandleQfCursor()
+    " Set lazy redraw to prevent flashing when the quickfix item is selected and opened.
+    set lazyredraw
+
+    " Select the current quickfix item.
+    call execute("norm! \<Return>")
+
+    " Go to the previous window (which in this case will be the quickfix window).
+    wincmd p
+
+    set nolazyredraw
+endfunc
+au FileType qf nnoremap <buffer> <silent> <Return> :call HandleQfCursor()<Return>
+
 " Ensure windows are equalized when Vim is resized.
 au VimResized * wincmd =
 
@@ -137,6 +158,9 @@ set lcs=space:·,tab:→⠀
 " Open help in a vertical split.
 au FileType help wincmd L
 
+" Close Vim if the last window is a help window.
+au BufEnter * if winnr("$") == 1 && &filetype == "help" | q | endif
+
 " Search settings
 set incsearch
 set hlsearch
@@ -168,10 +192,13 @@ noremap <Right> <Nop>
 inoremap <Right> <Nop>
 
 " File type-specific settings
-autocmd FileType make setlocal noexpandtab       " Makefiles require tabs for indentation
-autocmd FileType go setlocal noexpandtab         " gofmt enforces tabs
-autocmd FileType bzl setlocal syntax=python      " Starlark is Python-like, so this gives the best syntax highlighting
-autocmd BufRead,BufNewFile *.glsl set filetype=c " GLSL is C-like, so this gives the best syntax highlighting
+autocmd FileType make setlocal noexpandtab
+autocmd FileType go setlocal noexpandtab
+autocmd FileType bzl setlocal syntax=python
+autocmd FileType css setlocal iskeyword+=-
+autocmd FileType html setlocal iskeyword+=-
+autocmd FileType make setlocal iskeyword+=-
+autocmd BufRead,BufNewFile *.glsl set filetype=c
 autocmd FileType markdown setlocal wrap
 autocmd FileType rst setlocal wrap
 
@@ -216,7 +243,7 @@ cnoremap <M-b> <S-Left>
 " Allow shift-insert to paste from clipboard like in terminal emulators.
 cnoremap <S-Insert> <C-r>+
 
-" Fix delay when switching to prev window from terminal.
+" Fix delay when switching to below/right window from terminal.
 tnoremap <C-w><C-w> <C-w><C-w>
 
 " Shortcuts for splitting terminal buffers.

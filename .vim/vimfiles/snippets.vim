@@ -268,8 +268,7 @@ func! s:SnippetComplete(A, L, P)
         return []
     endif
 
-    " Use asterisks to make the snippet completion fuzzy.
-    let snippet_functions = getcompletion("Snippet" . lang . "*" . a:A . "*", "function")
+    let snippet_functions = getcompletion("Snippet" . lang . a:A . "*", "function")
 
     " Remove the prefix to isolate the snippet name. getcompletion also includes the open parens,
     " so chop off the last character to remove it.
