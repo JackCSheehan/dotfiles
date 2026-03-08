@@ -67,7 +67,7 @@ func! VshellImpl() abort
     " Set up new buffer for shell.
     enew
     file vshell
-    setlocal buftype=prompt bufhidden=delete wrap nonumber norelativenumber noswapfile
+    setlocal buftype=prompt bufhidden=delete wrap nonumber norelativenumber noswapfile conceallevel=3 concealcursor=nvic
 
     " QuitPre covers quitting in the vshell buffer and BufLeave handles leaving the buffer first
     " and quitting from another buffer.

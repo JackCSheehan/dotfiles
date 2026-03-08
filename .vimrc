@@ -95,8 +95,8 @@ endif
 " Ensure quickfix buffer is always at the bottom and has a default size.
 au FileType qf wincmd J | resize 12
 
-" Close Vim if quickfix window is the last window left.
-au BufEnter * if winnr("$") == 1 && &filetype == "qf" | q | endif
+" Close Vim if the final buffer is something we don't care to keep open.
+au BufEnter * if winnr("$") == 1 && (&ft == "qf" || &ft == "netrw" || &ft == "help") | q | endif
 
 " Helper function which handles moving the cursor back to the quickfix list after selecting an item
 " in the list.
@@ -140,7 +140,6 @@ au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
 au FileType netrw vert resize 40
 au FileType netrw call execute("file netrw - " . getcwd())
-au BufEnter * if winnr("$") == 1 && &filetype == "netrw" | q | endif
 inoremap <silent> <C-e> <Esc>:Lex!<Return>
 nnoremap <silent> <C-e> :Lex!<Return>
 tnoremap <silent> <C-e> <C-w>:Lex!<Return>
@@ -157,9 +156,6 @@ set lcs=space:·,tab:→⠀
 
 " Open help in a vertical split.
 au FileType help wincmd L
-
-" Close Vim if the last window is a help window.
-au BufEnter * if winnr("$") == 1 && &filetype == "help" | q | endif
 
 " Search settings
 set incsearch
@@ -195,9 +191,7 @@ inoremap <Right> <Nop>
 autocmd FileType make setlocal noexpandtab
 autocmd FileType go setlocal noexpandtab
 autocmd FileType bzl setlocal syntax=python
-autocmd FileType css setlocal iskeyword+=-
-autocmd FileType html setlocal iskeyword+=-
-autocmd FileType make setlocal iskeyword+=-
+autocmd FileType css,html,make setlocal iskeyword+=-
 autocmd BufRead,BufNewFile *.glsl set filetype=c
 autocmd FileType markdown setlocal wrap
 autocmd FileType rst setlocal wrap
@@ -211,8 +205,6 @@ colorscheme onedark
 set background=dark
 set t_Co=256
 syntax on
-set conceallevel=3
-set concealcursor=nvic
 
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
@@ -255,8 +247,8 @@ tnoremap <C-w>s <C-w>:new<Enter>
 tnoremap <C-w>v <C-w>:vnew<Enter>
 
 " Tab shortcuts.
-nnoremap <C-w>t :tabnew<Enter>
-tnoremap <C-w>t <C-w>:tabnew<Enter>
+nnoremap <C-w>t :wincmd T<Enter>
+tnoremap <C-w>t <C-w>:wincmd T<Enter>
 nnoremap <C-w>T :tab term<Enter>
 tnoremap <C-w>T <C-w>:tab term<Enter>
 nnoremap <Tab> gt
