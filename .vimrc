@@ -21,6 +21,8 @@ set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
 set sidescroll=1
+set noshowcmd
+syntax sync fromstart
 
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
@@ -160,18 +162,22 @@ au FileType help wincmd L
 " Search settings
 set incsearch
 set hlsearch
-set wildmenu
-set wildmode=longest:full
-if has("patch-8.2.4325")
-    set wildoptions=pum
-endif
-set wildcharm=<Tab>
 set ignorecase
 set smartcase
 set tagcase=match
 set tags=tags
 set complete=.,w,b,u
 set nocscopetag
+
+" Wildmenu.
+set wildmenu
+set wildmode=noselect:lastused
+if has("patch-8.2.4325")
+    set wildoptions=pum
+endif
+set wildcharm=<Tab>
+cnoremap <Tab> <C-n><Right>
+au CmdLineChanged : call wildtrigger()
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
@@ -263,17 +269,15 @@ source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
-source ~/.vim/vimfiles/closing.vim
 
 " Fuzzy file search
 func! FindImpl(search)
-    ccl
-    let search = substitute(a:search, " ", "*", "g")
-    cgete system("git ls-files \"*" . search . "*\"")
-    copen
-    let w:quickfix_title = search
+    execute "e " . a:search
 endfunc
-command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
+func! FindComplete(A, L, P)
+    return system("git ls-files \"*" . a:A . "*\"")
+endfunc
+command! -nargs=1 -complete=custom,FindComplete Find :call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)

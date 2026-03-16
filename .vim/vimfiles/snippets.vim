@@ -38,6 +38,18 @@ func! Snippethtmlnewfile(...)
     norm gg
 endfunc
 
+func! Snippethtmlselectoption(...)
+    call s:Insert([
+        \"<select id=\"\">",
+        \"    <option value=\"option1\">Option 1</option>",
+        \"    <option value=\"option2\">Option 2</option>",
+        \"</select>",
+    \])
+
+    norm 4k2f"
+    startinsert
+endfunc
+
 " Inserts a link tag to pull in external CSS.
 func! Snippethtmllinkcss(...)
     call s:Insert([
@@ -116,6 +128,29 @@ func! Snippetjavascriptfetchpost(...)
     norm 10kf,
     startinsert
 endfunc
+
+" JavaScript function. Optional accepts a function name.
+func! Snippetjavascriptfunction(...)
+    if a:0 > 0
+        let function_name = a:1
+    else
+        let function_name = ""
+    endif
+
+    call s:Insert([
+        \"function " . function_name . "() {",
+        \"}",
+    \])
+
+    if function_name == ""
+        norm 2kf(
+        startinsert
+    else
+        execute "norm kO\<Tab>"
+        startinsert!
+    endif
+endfunc
+
 
 " -- Bash/Shell Snippets ---
 
