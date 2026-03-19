@@ -176,8 +176,12 @@ if has("patch-8.2.4325")
     set wildoptions=pum
 endif
 set wildcharm=<Tab>
-cnoremap <Tab> <C-n><Right>
-au CmdLineChanged : call wildtrigger()
+
+" If possible, enable live-updating wildmenu.
+if exists("*wildtrigger()")
+    cnoremap <Tab> <C-n><Right>
+    au CmdLineChanged : call wildtrigger()
+endif
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
@@ -224,11 +228,6 @@ tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
 tnoremap <C-Backspace> <Backspace>
 
-" Make Ctrl + Backspace backspace a full word. Note that this might not work in some terminal
-" emulators, but it does work in Gvim.
-inoremap <C-Backspace> <C-w>
-cnoremap <C-Backspace> <C-w>
-
 " GNU readline shortcuts in command mode.
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -253,8 +252,8 @@ tnoremap <C-w>s <C-w>:new<Enter>
 tnoremap <C-w>v <C-w>:vnew<Enter>
 
 " Tab shortcuts.
-nnoremap <C-w>t :wincmd T<Enter>
-tnoremap <C-w>t <C-w>:wincmd T<Enter>
+nnoremap <C-w>t :tabnew<Enter>
+tnoremap <C-w>t <C-w>:tabnew<Enter>
 nnoremap <C-w>T :tab term<Enter>
 tnoremap <C-w>T <C-w>:tab term<Enter>
 nnoremap <Tab> gt
@@ -272,12 +271,13 @@ source ~/.vim/vimfiles/snippets.vim
 
 " Fuzzy file search
 func! FindImpl(search)
-    execute "e " . a:search
+    ccl
+    let search = substitute(a:search, " ", "*", "g")
+    cgete system("git ls-files \"*" . search . "*\"")
+    copen
+    let w:quickfix_title = search
 endfunc
-func! FindComplete(A, L, P)
-    return system("git ls-files \"*" . a:A . "*\"")
-endfunc
-command! -nargs=1 -complete=custom,FindComplete Find :call FindImpl(<f-args>)
+command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
 
 " Recursive grep
 func! GrepImpl(search)
