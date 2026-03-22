@@ -1,5 +1,10 @@
 " Diff review for PR reviews. Call from command line directly with 'vim -c Review'
 func! ReviewImpl()
+    enew
+
+    " Configure the diff buffer
+    setlocal filetype=diff nomodifiable nomodified
+
     let current_branch = trim(system("git branch --show-current"))
     let default_remote_branch = trim(system("git symbolic-ref refs/remotes/origin/HEAD --short"))
     let git_diff_range = default_remote_branch . "..." . current_branch
@@ -29,9 +34,6 @@ func! ReviewImpl()
     " Put the patch into the current buffer
     call setline(1, split(patch, "\n"))
 
-    " Configure the diff buffer
-    setlocal filetype=diff nomodifiable nomodified
-
     " Show diff summary info in the status line.
     let diff_shortstat = trim(system("git diff " . git_diff_range . " --shortstat"))
     call setbufvar("", "&statusline", "Diff for " . git_diff_range . " | " . diff_shortstat)
@@ -44,3 +46,4 @@ func! ReviewImpl()
     call setbufvar("", "&statusline", "Modified files")
 endfunc
 command! Review call ReviewImpl()
+nnoremap <Leader>r :Review<Cr>

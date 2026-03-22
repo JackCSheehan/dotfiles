@@ -24,6 +24,10 @@ set sidescroll=1
 set noshowcmd
 syntax sync fromstart
 
+" Leader config for custom keybinds.
+let mapleader = " "
+nnoremap <Space> <Nop>
+
 if has("win32")
     " This path is not set by default in Windows, so add it to make it align with Linux.
     set runtimepath+=~/.vim
@@ -122,10 +126,6 @@ au VimResized * wincmd =
 " Don't block closing current terminal buffer on running job.
 tnoremap <C-w>c <C-w>:q!<Return>
 
-" Don't block making current window the only one on jobs running in other windows' terminal buffers.
-nnoremap <C-w>o :only!<Return>
-tnoremap <C-w>o <C-w>:only!<Return>
-
 " Statusline
 set laststatus=2
 set statusline=%f%m
@@ -142,9 +142,7 @@ au FileType netrw nmap <buffer> h -
 au FileType netrw nmap <buffer> l <Return>
 au FileType netrw vert resize 40
 au FileType netrw call execute("file netrw - " . getcwd())
-inoremap <silent> <C-e> <Esc>:Lex!<Return>
-nnoremap <silent> <C-e> :Lex!<Return>
-tnoremap <silent> <C-e> <C-w>:Lex!<Return>
+nnoremap <silent> <Leader>e :Lex!<Return>
 
 " Indentation
 set expandtab
@@ -171,16 +169,16 @@ set nocscopetag
 
 " Wildmenu.
 set wildmenu
-set wildmode=noselect:lastused
+set wildmode=longest:full
 if has("patch-8.2.4325")
     set wildoptions=pum
 endif
 set wildcharm=<Tab>
 
-" If possible, enable live-updating wildmenu.
 if exists("*wildtrigger()")
     cnoremap <Tab> <C-n><Right>
     au CmdLineChanged : call wildtrigger()
+    set wildmode=noselect:lastused
 endif
 
 " Allow navigating through soft line wraps
@@ -218,10 +216,6 @@ syntax on
 
 " Don't block quit on running terminals.
 au TerminalWinOpen * call term_setkill(bufnr(), "kill")
-
-" Allow "full-screening" a window.
-nnoremap <C-w>+ :vert resize 999 \| resize 999<Enter>
-tnoremap <C-w>+ <C-w>:vert resize 999 \| resize 999<Enter>
 
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
@@ -268,6 +262,8 @@ source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
+source ~/.vim/vimfiles/browse.vim
+source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search
 func! FindImpl(search)
@@ -278,6 +274,7 @@ func! FindImpl(search)
     let w:quickfix_title = search
 endfunc
 command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
+nnoremap <Leader>f :Find 
 
 " Recursive grep
 func! GrepImpl(search)
@@ -291,6 +288,7 @@ func! GrepImpl(search)
     let w:quickfix_title = a:search
 endfunc
 command! -nargs=1 -complete=file Grep call GrepImpl(<f-args>)
+nnoremap <Leader>g :Grep 
 
 " Load git diff patch file.
 func! GitDiff() abort
@@ -300,6 +298,7 @@ func! GitDiff() abort
     setlocal filetype=diff nomodifiable nomodified
 endfunc
 command! -nargs=0 GitDiff call GitDiff(<f-args>)
+nnoremap <Leader>d :GitDiff<Cr>
 
 " Run universal ctags.
 func! Tags() abort
