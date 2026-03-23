@@ -157,6 +157,8 @@ set lcs=space:·,tab:→⠀
 " Open help in a vertical split.
 au FileType help wincmd L
 
+nnoremap <Leader>h :h <Tab>
+
 " Search settings
 set incsearch
 set hlsearch
@@ -175,10 +177,10 @@ if has("patch-8.2.4325")
 endif
 set wildcharm=<Tab>
 
-if exists("*wildtrigger()")
-    cnoremap <Tab> <C-n><Right>
+" Enable cmdline autocompletion, if possible.
+if v:version >= 902
     au CmdLineChanged : call wildtrigger()
-    set wildmode=noselect:lastused
+    set wildmode=noselect:lastused,full
 endif
 
 " Allow navigating through soft line wraps
@@ -267,13 +269,17 @@ source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search
 func! FindImpl(search)
-    ccl
     let search = substitute(a:search, " ", "*", "g")
     cgete system("git ls-files \"*" . search . "*\"")
     copen
     let w:quickfix_title = search
 endfunc
-command! -nargs=1 -complete=file Find call FindImpl(<f-args>)
+
+func! FindComplete(A, L, P)
+    return systemlist("git ls-files \"*" . a:A . "*\"")
+endfunc
+
+command! -nargs=1 -complete=customlist,FindComplete Find call FindImpl(<f-args>)
 nnoremap <Leader>f :Find 
 
 " Recursive grep
@@ -282,7 +288,6 @@ func! GrepImpl(search)
         return
     endif
 
-    ccl
     cgete system("git grep -in " . a:search)
     copen
     let w:quickfix_title = a:search

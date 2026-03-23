@@ -202,7 +202,50 @@ func! Snippetshdirectorynotexists(...)
     startinsert
 endfunc
 
+" Bash function. Optionally accepts a function name.
+func! Snippetshfunction(...)
+    if a:0 > 0
+        let function_name = a:1
+    else
+        let function_name = ""
+    endif
+
+    call s:Insert([
+        \"function " . function_name . "() {",
+        \"}",
+    \])
+
+    if function_name == ""
+        norm 2kf(
+        startinsert
+    else
+        execute "norm kO\<Tab>"
+        startinsert!
+    endif
+endfunc
+
 " --- Python Snippets ---
+
+" Python function. Optionally accepts a function name.
+func! Snippetpythonfunction(...)
+    if a:0 > 0
+        let function_name = a:1
+    else
+        let function_name = ""
+    endif
+
+    call s:Insert([
+        \"def " . function_name . "():",
+    \])
+
+    if function_name == ""
+        norm kf(
+        startinsert
+    else
+        execute "norm O\<Tab>"
+        startinsert!
+    endif
+endfunc
 
 " Flask boilerplate.
 func! Snippetpythonflask(...)
@@ -279,6 +322,28 @@ func! Snippetvimcommand(...)
     \])
 endfunc
 
+" Vimscript function. Optionally accepts a function name.
+func! Snippetvimfunction(...)
+    if a:0 > 0
+        let function_name = a:1
+    else
+        let function_name = ""
+    endif
+
+    call s:Insert([
+        \"func! " . function_name . "()",
+        \"endfunc",
+    \])
+
+    if function_name == ""
+        norm 2kf(
+        startinsert
+    else
+        execute "norm kO\<Tab>"
+        startinsert!
+    endif
+endfunc
+
 " Creates a custom snippet function.
 func! Snippetvimsnippet(...)
     call s:Insert([
@@ -293,6 +358,11 @@ endfunc
 
 " Completion function for Snippet command.
 func! s:SnippetComplete(A, L, P)
+    " Don't autocomplete anything other than the snippet name.
+    if a:L =~# 'Snippet \w\+ '
+        return []
+    endif
+
     if &buftype == "terminal"
         let lang = "terminal"
     else
@@ -329,7 +399,5 @@ endfunc
 command! -nargs=+ -complete=customlist,s:SnippetComplete Snippet :call s:Snippet(<f-args>)
 
 " Keyboard shortcuts for the snippet command.
-inoremap <C-s> <Esc>:Snippet <Tab>
-nnoremap <C-s> :Snippet <Tab>
-tnoremap <C-s> <C-w>:Snippet <Tab>
+nnoremap <Leader>s :Snippet <Tab>
 
