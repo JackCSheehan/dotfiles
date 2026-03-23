@@ -268,18 +268,11 @@ source ~/.vim/vimfiles/browse.vim
 source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search
-func! FindImpl(search)
-    let search = substitute(a:search, " ", "*", "g")
-    cgete system("git ls-files \"*" . search . "*\"")
-    copen
-    let w:quickfix_title = search
-endfunc
-
 func! FindComplete(A, L, P)
     return systemlist("git ls-files \"*" . a:A . "*\"")
 endfunc
 
-command! -nargs=1 -complete=customlist,FindComplete Find call FindImpl(<f-args>)
+command! -nargs=1 -complete=customlist,FindComplete Find e <args>
 nnoremap <Leader>f :Find 
 
 " Recursive grep
