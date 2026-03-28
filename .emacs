@@ -38,14 +38,18 @@
 (setq-default indent-line-function 'insert-tab)
 (setq-default backward-delete-char-untabify-method 'all)
 
-;; Viper
-(setq-default viper-inhibit-startup-message 't)
-(setq-default viper-expert-level '5)
-(setq-default viper-mode t)
-(setq-default viper-shift-width 4)
-(setq-default viper-ex-style-motion nil)
-(setq-default viper-ex-style-editing nil)
-(require 'viper)
+;; Cross-platform things.
+(when (eq system-type 'windows-nt)
+    (setq-default explicit-shell-file-name "powershell"))
+(when (eq system-type 'gnu/linux)
+    (setq-default explicit-shell-file-name "bash"))
+
 
 ;; Terminals
 (add-hook 'term-mode-hook (lambda () (term-set-escape-char ?\C-x)))
+
+;; Window and terminal splits.
+(global-set-key (kbd "C-c v") (lambda () (interactive) (split-window-right) (other-window 1)))
+(global-set-key (kbd "C-c s") (lambda () (interactive) (split-window-below) (other-window 1)))
+(global-set-key (kbd "C-c V") (lambda () (interactive) (split-window-right) (other-window 1) (ansi-term explicit-shell-file-name)))
+(global-set-key (kbd "C-c S") (lambda () (interactive) (split-window-below) (other-window 1) (ansi-term explicit-shell-file-name)))

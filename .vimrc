@@ -178,7 +178,7 @@ endif
 set wildcharm=<Tab>
 
 " Enable cmdline autocompletion, if possible.
-if v:version >= 902
+if exists("*wildtrigger()")
     au CmdLineChanged : call wildtrigger()
     set wildmode=noselect:lastused,full
 endif
