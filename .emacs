@@ -21,6 +21,8 @@
 (setq-default blink-matching-paren nil)
 (setq-default show-paren-delay 0)
 (setq-default comment-multi-line t)
+(toggle-truncate-lines 1)
+(visual-line-mode -1)
 (show-paren-mode 1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (global-set-key (kbd "RET") (key-binding (kbd "M-j")))
@@ -54,7 +56,11 @@
     (setq-default explicit-shell-file-name "bash"))
 
 ;; Terminals.
-(add-hook 'term-mode-hook (lambda () (term-set-escape-char ?\C-x)))
+(add-hook 'term-mode-hook (lambda ()
+                            ;; Make escape char match standard Emacs leader.
+                            (term-set-escape-char ?\C-x)
+                            ;; Don't show line numbers in terminals.
+                            (display-line-numbers-mode -1)))
 (setq-default confirm-kill-processes nil)
 
 ;; Window and terminal splits.
