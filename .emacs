@@ -3,7 +3,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(blink-cursor-mode -1)
+
 (save-place-mode +1)
 (savehist-mode 1)
 (column-number-mode +1)
@@ -21,6 +21,7 @@
 (setq-default blink-matching-paren nil)
 (setq-default show-paren-delay 0)
 (setq-default comment-multi-line t)
+(setq-default vc-follow-symlinks t)
 (toggle-truncate-lines 1)
 (visual-line-mode -1)
 (show-paren-mode 1)
@@ -28,7 +29,8 @@
 (global-set-key (kbd "RET") (key-binding (kbd "M-j")))
 
 ;; Grep
-(setopt grep-command "grep -irn ")
+(setq-default grep-use-null-device nil)
+(setq-default grep-command "git grep -in ")
 (global-set-key (kbd "C-c g") 'grep)
 
 ;; Find
@@ -60,10 +62,28 @@
                             ;; Make escape char match standard Emacs leader.
                             (term-set-escape-char ?\C-x)
                             ;; Don't show line numbers in terminals.
-                            (display-line-numbers-mode -1)))
+                            (setq-local display-line-numbers-mode nil)))
 (setq-default confirm-kill-processes nil)
+
+;; Proced.
+(setq-default proced-auto-update-flag t)
+(setq-default proced-auto-update-interval 1)
+(when (>= emacs-major-version 29)
+  (setq-default proced-enable-color-flag t))
+(add-hook 'proced-mode-hook (lambda ()
+                              ;; Don't show line numbers in proced.
+                              (setq-local display-line-numbers-type nil)))
+
+;; Cursor.
+(blink-cursor-mode -1)
+(setq-default cursor-type 'bar)
+
+;; Completion.
+(add-hook 'completion-list-mode-hook (lambda ()
+                                       (setq-local display-line-numbers-type nil)))
 
 ;; Window and terminal splits.
 (global-set-key (kbd "C-x 3") (lambda () (interactive) (split-window-right) (other-window 1)))
 (global-set-key (kbd "C-x 2") (lambda () (interactive) (split-window-below) (other-window 1)))
 (global-set-key (kbd "C-c t") (lambda() (interactive) (ansi-term explicit-shell-file-name)))
+(setq-default split-width-threshold 0) ;; Always prefer vertical splits.
