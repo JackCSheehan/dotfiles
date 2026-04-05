@@ -45,7 +45,8 @@
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
 (setq-default indent-line-function 'insert-tab)
-(setq-default backward-delete-char-untabify-method 'all)
+(global-set-key (kbd "DEL") 'backward-delete-char-untabify)
+(setq-default backward-delete-char-untabify-method 'hungry)
 
 ;; Tab bar settings.
 (setq-default tab-bar-close-button-show nil)
@@ -74,6 +75,10 @@
                               ;; Don't show line numbers in proced.
                               (setq-local display-line-numbers-type nil)))
 
+;; Dired.
+(add-hook 'dired-mode-hook (lambda ()
+                             (auto-revert-mode 1)))
+
 ;; Cursor.
 (blink-cursor-mode -1)
 (setq-default cursor-type 'bar)
@@ -87,3 +92,6 @@
 (global-set-key (kbd "C-x 2") (lambda () (interactive) (split-window-below) (other-window 1)))
 (global-set-key (kbd "C-c t") (lambda() (interactive) (ansi-term explicit-shell-file-name)))
 (setq-default split-width-threshold 0) ;; Always prefer vertical splits.
+
+;; Language-specific configs.
+(setq-default sgml-basic-offset 4)
