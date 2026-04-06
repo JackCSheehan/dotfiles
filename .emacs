@@ -43,10 +43,10 @@
 ;; Indentation
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(setq-default c-basic-offset 4)
 (setq-default indent-line-function 'insert-tab)
-(global-set-key (kbd "DEL") 'backward-delete-char-untabify)
 (setq-default backward-delete-char-untabify-method 'hungry)
+(setq-default c-basic-offset 4)
+(electric-indent-mode 0)
 
 ;; Tab bar settings.
 (setq-default tab-bar-close-button-show nil)
