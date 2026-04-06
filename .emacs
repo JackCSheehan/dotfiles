@@ -46,7 +46,6 @@
 (setq-default indent-line-function 'insert-tab)
 (setq-default backward-delete-char-untabify-method 'hungry)
 (setq-default c-basic-offset 4)
-(electric-indent-mode 0)
 
 ;; Tab bar settings.
 (setq-default tab-bar-close-button-show nil)
