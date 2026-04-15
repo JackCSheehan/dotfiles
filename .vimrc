@@ -54,7 +54,7 @@ if has("gui_running")
     set guioptions-=r
     set guioptions-=L
     set guioptions-=e
-    set guioptions+=c
+    set guioptions+=cM
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
     set lines=40 columns=140
@@ -158,7 +158,8 @@ set lcs=space:·,tab:→⠀
 " Open help in a vertical split.
 au FileType help wincmd L
 
-nnoremap <Leader>h :h <Tab>
+" Help shortcut.
+nnoremap <Leader>h :h 
 
 " Search settings
 set incsearch
@@ -178,12 +179,6 @@ if has("patch-8.2.4325")
     set pumheight=20
 endif
 set wildcharm=<Tab>
-
-" Enable cmdline autocompletion, if possible.
-if exists("*wildtrigger()")
-    au CmdLineChanged : call wildtrigger()
-    set wildmode=noselect:lastused,full
-endif
 
 " Allow navigating through soft line wraps
 nnoremap <expr> j v:count ? 'j' : 'gj'
@@ -224,7 +219,7 @@ au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
-tnoremap <C-Backspace> <C-w>
+tnoremap <C-Backspace> <Backspace>
 
 " GNU readline shortcuts in command mode.
 cnoremap <C-a> <Home>
