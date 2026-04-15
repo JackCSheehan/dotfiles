@@ -23,6 +23,7 @@ set sessionoptions-=options
 set sidescroll=1
 set noshowcmd
 syntax sync fromstart
+set viminfo='20,/0,:0,<0,@0,h,s0
 
 " Leader config for custom keybinds.
 let mapleader = " "
@@ -174,6 +175,7 @@ set wildmenu
 set wildmode=longest:full
 if has("patch-8.2.4325")
     set wildoptions=pum
+    set pumheight=20
 endif
 set wildcharm=<Tab>
 
@@ -222,7 +224,7 @@ au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
-tnoremap <C-Backspace> <Backspace>
+tnoremap <C-Backspace> <C-w>
 
 " GNU readline shortcuts in command mode.
 cnoremap <C-a> <Home>
@@ -232,6 +234,7 @@ cnoremap <C-b> <Left>
 cnoremap <C-d> <Delete>
 cnoremap <M-f> <S-Right>
 cnoremap <M-b> <S-Left>
+cnoremap <C-Backspace> <C-w>
 
 " Allow shift-insert to paste from clipboard like in terminal emulators.
 cnoremap <S-Insert> <C-r>+
@@ -246,6 +249,7 @@ nnoremap <C-w>S :term<Enter>
 tnoremap <C-w>S <C-w>:term<Enter>
 tnoremap <C-w>s <C-w>:new<Enter>
 tnoremap <C-w>v <C-w>:vnew<Enter>
+nnoremap <Leader>t :terminal ++curwin<Enter>
 
 " Tab shortcuts.
 nnoremap <C-w>t :tabnew<Enter>
