@@ -20,7 +20,6 @@ set noshowmatch
 set textwidth=100
 set wrapmargin=0
 set sessionoptions-=options
-set sidescroll=1
 set noshowcmd
 syntax sync fromstart
 set viminfo='20,/0,:0,<0,@0,h,s0
@@ -220,6 +219,9 @@ au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
 tnoremap <C-Backspace> <Backspace>
+
+" Support C-Backspace in insert mode.
+inoremap <C-Backspace> <C-w>
 
 " GNU readline shortcuts in command mode.
 cnoremap <C-a> <Home>
