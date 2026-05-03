@@ -56,7 +56,7 @@ if has("gui_running")
     set guioptions+=cM
     set backspace=indent,eol,start
     set guicursor+=a:blinkon0
-    set lines=40 columns=140
+    au GUIEnter * set lines=40 columns=140
 
     " Disable the mouse.
     set mouse=
@@ -72,6 +72,15 @@ if has("gui_running")
     nnoremap <ScrollWheelRight> <Nop>
     inoremap <ScrollWheelRight> <Nop>
     tnoremap <ScrollWheelRight> <Nop>
+    nnoremap <MiddleMouse> <Nop>
+    inoremap <MiddleMouse> <Nop>
+    tnoremap <MiddleMouse> <Nop>
+    nnoremap <LeftMouse> <Nop>
+    inoremap <LeftMouse> <Nop>
+    tnoremap <LeftMouse> <Nop>
+    nnoremap <RightMouse> <Nop>
+    inoremap <RightMouse> <Nop>
+    tnoremap <RightMouse> <Nop>
 
     " Not all terminal emulators support non-ASCII, so only set this for Gvim.
     set fillchars+=vert:│
@@ -96,6 +105,8 @@ if has("gui_running")
     " Gvim's embedded terminal doesn't support these GNU readline shortcuts even on Linux.
     tnoremap <M-f> <C-Right>
     tnoremap <M-b> <C-Left>
+    " Note this depends on the C-Backspace tnoremap later in this file to work.
+    tmap <M-d> <M-f><C-backspace>
 endif
 
 " Ensure quickfix buffer is always at the bottom and has a default size.
@@ -104,27 +115,11 @@ au FileType qf wincmd J | resize 12
 " Close Vim if the final buffer is something we don't care to keep open.
 au BufEnter * if winnr("$") == 1 && (&ft == "qf" || &ft == "netrw" || &ft == "help") | q | endif
 
-" Helper function which handles moving the cursor back to the quickfix list after selecting an item
-" in the list.
-func! HandleQfCursor()
-    " Set lazy redraw to prevent flashing when the quickfix item is selected and opened.
-    set lazyredraw
-
-    " Select the current quickfix item.
-    call execute("norm! \<Return>")
-
-    " Go to the previous window (which in this case will be the quickfix window).
-    wincmd p
-
-    set nolazyredraw
-endfunc
-au FileType qf nnoremap <buffer> <silent> <Return> :call HandleQfCursor()<Return>
-
 " Ensure windows are equalized when Vim is resized.
 au VimResized * wincmd =
 
 " Don't block closing current terminal buffer on running job.
-tnoremap <C-w>c <C-w>:q!<Return>
+tnoremap <silent> <C-w>c <C-w>:q!<Return>
 
 " Statusline
 set laststatus=2
@@ -159,6 +154,19 @@ au FileType help wincmd L
 
 " Help shortcut.
 nnoremap <Leader>h :h 
+
+" Buffer shortcut.
+nnoremap <Leader>b :b <Tab>
+
+" Custom shortcuts for navigating quickfix list.
+nnoremap <silent> <Leader>j :cnext<Return>
+nnoremap <silent> <Leader>k :cprev<Return>
+
+" Custom shortcut to jump to column width.
+nnoremap <silent> <Leader>$ :call cursor(line("."), &textwidth)<Return>
+
+" Shortcut for running :noh since it gets cumbersome to type all the time.
+nnoremap <silent> <Leader>n :noh<Return>
 
 " Search settings
 set incsearch
@@ -195,7 +203,7 @@ inoremap <Right> <Nop>
 
 " File type-specific settings
 autocmd FileType make setlocal noexpandtab
-autocmd FileType go setlocal noexpandtab
+autocmd FileType go setlocal noexpandtab iskeyword-=.
 autocmd FileType bzl setlocal syntax=python
 autocmd FileType css,html,make setlocal iskeyword+=-
 autocmd BufRead,BufNewFile *.glsl set filetype=c
@@ -218,7 +226,13 @@ au TerminalWinOpen * call term_setkill(bufnr(), "kill")
 " Fix keybinds that insert control characters into terminal buffers.
 tnoremap <S-Space> <Space>
 tnoremap <C-Return> <Return>
-tnoremap <C-Backspace> <Backspace>
+
+" Support C-Backspace in terminal buffers. Use a function to work around vim interpreting <C-w>
+" weirdly on the rhs of a mapping.
+func! SendCWTerm()
+    call term_sendkeys(bufnr(), "\<C-w>")
+endfunc
+tnoremap <silent> <C-Backspace> <C-w>:call SendCWTerm()<Return>
 
 " Support C-Backspace in insert mode.
 inoremap <C-Backspace> <C-w>
@@ -240,32 +254,32 @@ cnoremap <S-Insert> <C-r>+
 tnoremap <C-w><C-w> <C-w><C-w>
 
 " Shortcuts for splitting terminal buffers.
-nnoremap <C-w>V :vert term<Enter>
-tnoremap <C-w>V <C-w>:vert term<Enter>
-nnoremap <C-w>S :term<Enter>
-tnoremap <C-w>S <C-w>:term<Enter>
-tnoremap <C-w>s <C-w>:new<Enter>
-tnoremap <C-w>v <C-w>:vnew<Enter>
-nnoremap <Leader>t :terminal ++curwin<Enter>
+nnoremap <silent> <C-w>V :vert term<Enter>
+tnoremap <silent> <C-w>V <C-w>:vert term<Enter>
+nnoremap <silent> <C-w>S :term<Enter>
+tnoremap <silent> <C-w>S <C-w>:term<Enter>
+tnoremap <silent> <C-w>s <C-w>:new<Enter>
+tnoremap <silent> <C-w>v <C-w>:vnew<Enter>
+nnoremap <silent> <Leader>t :terminal ++curwin<Enter>
 
 " Tab shortcuts.
-nnoremap <C-w>t :tabnew<Enter>
-tnoremap <C-w>t <C-w>:tabnew<Enter>
-nnoremap <C-w>T :tab term<Enter>
-tnoremap <C-w>T <C-w>:tab term<Enter>
-nnoremap <Tab> gt
-nnoremap <C-w><Tab> gt
-tnoremap <C-w><Tab> <C-w>gt
-nnoremap <S-Tab> gT
-nnoremap <C-w><S-Tab> gT
-tnoremap <C-w><S-Tab> <C-w>gT
+nnoremap <silent> <C-w>t :tabnew<Enter>
+tnoremap <silent> <C-w>t <C-w>:tabnew<Enter>
+nnoremap <silent> <C-w>T :tab term<Enter>
+tnoremap <silent> <C-w>T <C-w>:tab term<Enter>
+nnoremap <silent> <Tab> gt
+nnoremap <silent> <C-w><Tab> gt
+tnoremap <silent> <C-w><Tab> <C-w>gt
+nnoremap <silent> <S-Tab> gT
+nnoremap <silent> <C-w><S-Tab> gT
+tnoremap <silent> <C-w><S-Tab> <C-w>gT
 
 " Import external vimfiles
 source ~/.vim/vimfiles/vshell.vim
 source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
-source ~/.vim/vimfiles/browse.vim
+source ~/.vim/vimfiles/query.vim
 source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search
@@ -301,8 +315,6 @@ nnoremap <Leader>d :GitDiff<Cr>
 
 " Run universal ctags.
 func! Tags() abort
-    " Call ctags, but have it write to .tags.swp and rename it to "tags" when done. This will ensure
-    " that we can continue to use an existing tags file while a new one is being generated.
-    call system("ctags --recurse --languages=AnsiblePlaybook,C,C#,C++,CSS,Erlang,Go,Java,JavaScript,Julia,Kotlin,Lua,Matlab,PHP,Perl,PowerShell,Python,PuppetManifest,Ruby,Rust,Terraform,TerraformVariabes,Vim,Sh,TypeScript -f .tags.swp && mv .tags.swp tags")
+    call system("ctags --recurse --languages=AnsiblePlaybook,C,C#,C++,CSS,Erlang,Go,Java,JavaScript,Julia,Kotlin,Lua,Matlab,PHP,Perl,PowerShell,Python,PuppetManifest,Ruby,Rust,Terraform,Vim,Sh,TypeScript")
 endfunc
 

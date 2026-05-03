@@ -10,6 +10,9 @@ let s:sites = {
 \   "hpe": "https://support.hpe.com/connect/s/search?#q=",
 \   "stackoverflow": "https://stackoverflow.com/search?q=",
 \   "githubrepos": "https://github.com/search?type=repositories&q=",
+\   "godoc": "https://pkg.go.dev/search?q=",
+\   "docker": "https://www.google.com/search?q=site:https://docs.docker.com ",
+\   "cpp": "https://cppreference.com/index.php?search=",
 \   "ruby": "https://www.google.com/search?q=site:docs.ruby-lang.org ",
 \   "make": "https://www.google.com/search?q=site:gnu.org/software/make/manual/html_node ",
 \   "guile": "https://www.google.com/search?q=site:gnu.org/software/guile/manual/html_node ",
@@ -20,16 +23,16 @@ let s:sites = {
 let s:site_names = keys(s:sites)
 
 " Autocomplete site names.
-func! s:BrowseComplete(A, L, P)
+func! s:QueryComplete(A, L, P)
     " Don't autocomplete anything other than the site name.
-    if a:L =~# 'Browse \w\+ '
+    if a:L =~# 'Query \w\+ '
         return []
     endif
     return filter(copy(s:site_names), "v:val =~ '" . a:A . "'")
 endfunc
 
 " Launches the user's query in the default web browser.
-func! s:Browse(site, ...)
+func! s:Query(site, ...)
     if !has_key(s:sites, a:site)
         return
     endif
@@ -46,6 +49,6 @@ func! s:Browse(site, ...)
     endif
 endfunc
 
-command! -nargs=+ -complete=customlist,s:BrowseComplete Browse :call s:Browse(<f-args>)
-nnoremap <Leader>b :Browse <Tab>
+command! -nargs=+ -complete=customlist,s:QueryComplete Query :call s:Query(<f-args>)
+nnoremap <Leader>q :query <Tab>
 
