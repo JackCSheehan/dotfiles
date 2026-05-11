@@ -12,7 +12,6 @@ set nojoinspaces
 set nowrap
 set linebreak
 set autoread
-set errorformat+=%f
 set noesckeys
 set splitright
 set splitbelow
@@ -280,6 +279,7 @@ source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
 source ~/.vim/vimfiles/query.vim
+source ~/.vim/vimfiles/build.vim
 source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search

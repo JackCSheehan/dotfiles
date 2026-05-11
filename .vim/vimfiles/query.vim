@@ -50,5 +50,5 @@ func! s:Query(site, ...)
 endfunc
 
 command! -nargs=+ -complete=customlist,s:QueryComplete Query :call s:Query(<f-args>)
-nnoremap <Leader>q :query <Tab>
+nnoremap <Leader>q :Query <Tab>
 
