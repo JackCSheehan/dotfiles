@@ -18,6 +18,7 @@ set splitbelow
 set noshowmatch
 set textwidth=100
 set wrapmargin=0
+set errorformat+=%f
 set sessionoptions-=options
 set noshowcmd
 syntax sync fromstart
@@ -279,7 +280,6 @@ source ~/.vim/vimfiles/tmux.vim
 source ~/.vim/vimfiles/review.vim
 source ~/.vim/vimfiles/snippets.vim
 source ~/.vim/vimfiles/query.vim
-source ~/.vim/vimfiles/build.vim
 source ~/.vim/vimfiles/launch.vim
 
 " Fuzzy file search
