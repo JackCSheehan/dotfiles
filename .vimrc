@@ -282,14 +282,6 @@ source ~/.vim/vimfiles/snippets.vim
 source ~/.vim/vimfiles/query.vim
 source ~/.vim/vimfiles/launch.vim
 
-" Fuzzy file search
-func! FindComplete(A, L, P)
-    return systemlist("git ls-files \"*" . a:A . "*\"")
-endfunc
-
-command! -nargs=1 -complete=customlist,FindComplete Find e <args>
-nnoremap <Leader>f :Find 
-
 " Recursive grep
 func! GrepImpl(search)
     if trim(a:search) == ""
@@ -302,16 +294,6 @@ func! GrepImpl(search)
 endfunc
 command! -nargs=1 -complete=file Grep call GrepImpl(<f-args>)
 nnoremap <Leader>g :Grep 
-
-" Load git diff patch file.
-func! GitDiff() abort
-    enew
-    let patch = trim(system("git diff"))
-    call setline(1, split(patch, "\n"))
-    setlocal filetype=diff nomodifiable nomodified
-endfunc
-command! -nargs=0 GitDiff call GitDiff(<f-args>)
-nnoremap <Leader>d :GitDiff<Cr>
 
 " Run universal ctags.
 func! Tags() abort
